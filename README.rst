@@ -1,0 +1,44 @@
+=======
+validus
+=======
+
+
+.. image:: https://img.shields.io/pypi/v/validus.svg
+        :target: https://pypi.python.org/pypi/validus
+
+.. image:: https://img.shields.io/travis/shopnilsazal/validus.svg
+        :target: https://travis-ci.org/shopnilsazal/validus
+
+.. image:: https://readthedocs.org/projects/validus/badge/?version=latest
+        :target: https://validus.readthedocs.io/en/latest/?badge=latest
+        :alt: Documentation Status
+
+
+A dead simple Python data validation library. It supports Python 3 only.
+
+.. code-block:: python
+
+    >>> import validus
+
+    >>> validus.isemail('someone@example.com')
+    True
+
+
+
+Resources
+---------
+
+- `Documentation <https://validus.readthedocs.io/>`_
+- `Issue Tracker <http://github.com/shopnilsazal/validus/issues>`_
+- `Code <http://github.com/shopnilsazal/validus/>`_
+
+
+
+Credits
+---------
+
+This package was created with Cookiecutter_ and the `audreyr/cookiecutter-pypackage`_ project template.
+
+.. _Cookiecutter: https://github.com/audreyr/cookiecutter
+.. _`audreyr/cookiecutter-pypackage`: https://github.com/audreyr/cookiecutter-pypackage
+

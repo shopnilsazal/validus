@@ -1,0 +1,979 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>validus.validators &#8212; validus 0.1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="top" title="validus 0.1.0 documentation" href="../../index.html" />
+    <link rel="up" title="Module code" href="../index.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body role="document">
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for validus.validators</h1><div class="highlight"><pre>
+<span></span><span class="c1"># -*- coding: utf-8 -*-</span>
+
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="k">import</span> <span class="n">validate_str</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">ipaddress</span>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">import</span> <span class="nn">time</span>
+
+<span class="n">patterns</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;ascii&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;^[\x00-\x7F]+$&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;base64&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;^(?:[A-Za-z0-9+\/]</span><span class="si">{4}</span><span class="s2">)*(?:[A-Za-z0-9+\/]</span><span class="si">{2}</span><span class="s2">==|[A-Za-z0-9+\/]</span><span class="si">{3}</span><span class="s2">=|[A-Za-z0-9+\/]</span><span class="si">{4}</span><span class="s2">)$&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;email&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;&quot;&quot;^(((([a-zA-Z]|\d|[!#\$%&amp;&#39;\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-zA-Z]|\d|[!#\$%&amp;&#39;\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-zA-Z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-zA-Z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-zA-Z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-zA-Z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-zA-Z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-zA-Z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-zA-Z]|\d|-|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-zA-Z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?$&quot;&quot;&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;credit_card&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;^(?:4[0-9]</span><span class="si">{12}</span><span class="s2">(?:[0-9]</span><span class="si">{3}</span><span class="s2">)?|5[1-5][0-9]</span><span class="si">{14}</span><span class="s2">|6(?:011|5[0-9][0-9])[0-9]</span><span class="si">{12}</span><span class="s2">|3[47][0-9]</span><span class="si">{13}</span><span class="s2">|3(?:0[0-5]|[68][0-9])[0-9]</span><span class="si">{11}</span><span class="s2">|(?:2131|1800|35\d</span><span class="si">{3}</span><span class="s2">)\d</span><span class="si">{11}</span><span class="s2">)$&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;float&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;^(?:[-+]?(?:[0-9]+))?(?:\.[0-9]*)?(?:[eE][\+\-]?(?:[0-9]+))?$&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;int&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;^(?:[-+]?(?:0|[1-9][0-9]*))$&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;iso8601&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^([\+-]?\d</span><span class="si">{4}</span><span class="s1">(?!\d</span><span class="si">{2}</span><span class="s1">\b))((-?)((0[1-9]|1[0-2])(\3([12]\d|0[1-9]|3[01]))?|W([0-4]\d|5[0-2])(-?[1-7])?|(00[1-9]|0[1-9]\d|[12]\d</span><span class="si">{2}</span><span class="s1">|3([0-5]\d|6[1-6])))([T\s]((([01]\d|2[0-3])((:?)[0-5]\d)?|24:?00)([\.,]\d+(?!:))?)?(\17[0-5]\d([\.,]\d+)?)?([zZ]|([\+-])([01]\d|2[0-3]):?([0-5]\d)?)?)?)?$&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;iban&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^[A-Z]</span><span class="si">{2}</span><span class="s1">[0-9]</span><span class="si">{2}</span><span class="s1">[A-Z0-9]{11,30}$&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;isin&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^[A-Z]</span><span class="si">{2}</span><span class="s1">[0-9A-Z]</span><span class="si">{9}</span><span class="s1">[0-9]$&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;uuid3&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;^[0-9a-fA-F]</span><span class="si">{8}</span><span class="s2">-[0-9a-fA-F]</span><span class="si">{4}</span><span class="s2">-3[0-9a-fA-F]</span><span class="si">{3}</span><span class="s2">-[0-9a-fA-F]</span><span class="si">{4}</span><span class="s2">-[0-9a-fA-F]</span><span class="si">{12}</span><span class="s2">$&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;uuid4&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;^[0-9a-fA-F]</span><span class="si">{8}</span><span class="s2">-[0-9a-fA-F]</span><span class="si">{4}</span><span class="s2">-4[0-9a-fA-F]</span><span class="si">{3}</span><span class="s2">-[89abAB][0-9a-fA-F]</span><span class="si">{3}</span><span class="s2">-[0-9a-fA-F]</span><span class="si">{12}</span><span class="s2">$&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;uuid5&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;^[0-9a-fA-F]</span><span class="si">{8}</span><span class="s2">-[0-9a-fA-F]</span><span class="si">{4}</span><span class="s2">-5[0-9a-fA-F]</span><span class="si">{3}</span><span class="s2">-[89abAB][0-9a-fA-F]</span><span class="si">{3}</span><span class="s2">-[0-9a-fA-F]</span><span class="si">{12}</span><span class="s2">$&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;uuid&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;^[0-9a-fA-F]</span><span class="si">{8}</span><span class="s2">-[0-9a-fA-F]</span><span class="si">{4}</span><span class="s2">-[0-9a-fA-F]</span><span class="si">{4}</span><span class="s2">-[0-9a-fA-F]</span><span class="si">{4}</span><span class="s2">-[0-9a-fA-F]</span><span class="si">{12}</span><span class="s2">$&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;md5&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^[a-fA-F0-9]</span><span class="si">{32}</span><span class="s1">$&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;mac&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^([0-9a-fA-F][0-9a-fA-F]:)</span><span class="si">{5}</span><span class="s1">([0-9a-fA-F][0-9a-fA-F])$&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;printable_ascii&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;^[\x20-\x7E]+$&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;multi_byte&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;[^\x00-\x7F]&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;full_width&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;[^\u0020-\u007E\uFF61-\uFF9F\uFFA0-\uFFDC\uFFE8-\uFFEE0-9a-zA-Z]&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;half_width&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;[\u0020-\u007E\uFF61-\uFF9F\uFFA0-\uFFDC\uFFE8-\uFFEE0-9a-zA-Z]&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;hexadecimal&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;^[0-9a-fA-F]+$&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;hex_color&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;^#?([0-9a-fA-F]</span><span class="si">{3}</span><span class="s2">|[0-9a-fA-F]</span><span class="si">{6}</span><span class="s2">)$&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;rgb_color&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;^rgb\(\s*(0|[1-9]\d?|1\d\d?|2[0-4]\d|25[0-5])\s*,\s*(0|[1-9]\d?|1\d\d?|2[0-4]\d|25[0-5])\s*,\s*(0|[1-9]\d?|1\d\d?|2[0-4]\d|25[0-5])\s*\)$&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;data_uri&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;\s*data:([a-zA-Z]+\/[a-zA-Z0-9\-\+]+(;[a-zA-Z\-]+=[a-zA-Z0-9\-]+)?)?(;base64)?,[a-zA-Z0-9!\$&amp;&#39;,\(\)\*\+,;=\-\._~:@\/\?%\s]*\s*$&quot;</span><span class="p">,</span>
+    <span class="s1">&#39;latitude&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?)$&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;longitude&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;dns&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^([a-zA-Z0-9_]</span><span class="si">{1}</span><span class="s1">[a-zA-Z0-9_-]{0,62})</span><span class="si">{1}</span><span class="s1">(\.[a-zA-Z0-9_]</span><span class="si">{1}</span><span class="s1">[a-zA-Z0-9_-]{0,62})*[\._]?$&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;url&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^((ftp|tcp|irc|udp|wss?|https?):\/\/)?(\S+(:\S*)?@)?((([1-9]\d?|1\d\d|2[01]\d|22[0-3])(\.(1?\d{1,2}|2[0-4]\d|25[0-5]))</span><span class="si">{2}</span><span class="s1">(?:\.([0-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(\[(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))\])|(([a-zA-Z0-9]([a-zA-Z0-9-_]+)?[a-zA-Z0-9]([-\.][a-zA-Z0-9]+)*)|(((www\.)|([a-zA-Z0-9]([-\.][-\._a-zA-Z0-9]+)*))?))?(([a-zA-Z\u00a1-\uffff0-9]+-?-?)*[a-zA-Z\u00a1-\uffff0-9]+)(?:\.([a-zA-Z\u00a1-\uffff]{1,}))?))\.?(:(\d{1,5}))?((\/|\?|#)[^\s]*)?$&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;ssn&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^\d</span><span class="si">{3}</span><span class="s1">[- ]?\d</span><span class="si">{2}</span><span class="s1">[- ]?\d</span><span class="si">{4}</span><span class="s1">$&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;slug&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^[-a-zA-Z0-9_]+$&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;semver&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^v?(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(-(0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(\.(0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*)?(\+[0-9a-zA-Z-]+(\.[0-9a-zA-Z-]+)*)?$&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;win_path&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^[a-zA-Z]:</span><span class="se">\\</span><span class="s1">(?:[^</span><span class="se">\\</span><span class="s1">/:*?&quot;&lt;&gt;|\r\n]+</span><span class="se">\\</span><span class="s1">)*[^</span><span class="se">\\</span><span class="s1">/:*?&quot;&lt;&gt;|\r\n]*$&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;unix_path&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^(/[^/\x00]*)+/?$&#39;</span>
+
+<span class="p">}</span>
+
+
+<span class="nd">@validate_str</span>
+<div class="viewcode-block" id="isascii"><a class="viewcode-back" href="../../usage.html#validus.isascii">[docs]</a><span class="k">def</span> <span class="nf">isascii</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return whether or not given value contains ASCII chars only. Empty string is valid.</span>
+<span class="sd">    If the value contains ASCII chars only, this function returns ``True``, otherwise ``False``.</span>
+
+<span class="sd">    Examples::</span>
+
+<span class="sd">        &gt;&gt;&gt; isascii(&#39;1234abcDEF&#39;)</span>
+<span class="sd">        True</span>
+
+<span class="sd">        &gt;&gt;&gt; isascii(&#39;ｆｏｏbar&#39;)</span>
+<span class="sd">        False</span>
+
+<span class="sd">    :param value: string to validate ASCII chars</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">value</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span> <span class="ow">or</span> <span class="nb">bool</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">patterns</span><span class="p">[</span><span class="s1">&#39;ascii&#39;</span><span class="p">],</span> <span class="n">value</span><span class="p">))</span></div>
+
+
+<span class="nd">@validate_str</span>
+<div class="viewcode-block" id="isprintascii"><a class="viewcode-back" href="../../usage.html#validus.isprintascii">[docs]</a><span class="k">def</span> <span class="nf">isprintascii</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return whether or not given value contains printable ASCII chars only. Empty string is valid.</span>
+<span class="sd">    If the value contains printable ASCII chars only, this function returns ``True``, otherwise ``False``.</span>
+
+<span class="sd">    Examples::</span>
+
+<span class="sd">        &gt;&gt;&gt; isprintascii(&#39;1234abcDEF&#39;)</span>
+<span class="sd">        True</span>
+
+<span class="sd">        &gt;&gt;&gt; isprintascii(&#39;ｆｏｏbar&#39;)</span>
+<span class="sd">        False</span>
+
+<span class="sd">    :param value: string to validate printable ASCII chars</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">value</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span> <span class="ow">or</span> <span class="nb">bool</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">patterns</span><span class="p">[</span><span class="s1">&#39;printable_ascii&#39;</span><span class="p">],</span> <span class="n">value</span><span class="p">))</span></div>
+
+
+<span class="nd">@validate_str</span>
+<div class="viewcode-block" id="isbase64"><a class="viewcode-back" href="../../usage.html#validus.isbase64">[docs]</a><span class="k">def</span> <span class="nf">isbase64</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return whether or not given value is base64 encoded.</span>
+<span class="sd">    If the value is base64 encoded, this function returns ``True``, otherwise ``False``.</span>
+
+<span class="sd">    Examples::</span>
+
+<span class="sd">        &gt;&gt;&gt; isbase64(&#39;U3VzcGVuZGlzc2UgbGVjdHVzIGxlbw==&#39;)</span>
+<span class="sd">        True</span>
+
+<span class="sd">        &gt;&gt;&gt; isbase64(&#39;Vml2YW11cyBmZXJtZtesting123&#39;)</span>
+<span class="sd">        False</span>
+
+<span class="sd">    :param value: string to validate base64 encoding</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">patterns</span><span class="p">[</span><span class="s1">&#39;base64&#39;</span><span class="p">],</span> <span class="n">value</span><span class="p">))</span></div>
+
+
+<span class="nd">@validate_str</span>
+<div class="viewcode-block" id="isemail"><a class="viewcode-back" href="../../usage.html#validus.isemail">[docs]</a><span class="k">def</span> <span class="nf">isemail</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return whether or not given value is an email.</span>
+<span class="sd">    If the value is an email, this function returns ``True``, otherwise ``False``.</span>
+
+<span class="sd">    Examples::</span>
+
+<span class="sd">        &gt;&gt;&gt; isemail(&#39;foo@bar.com&#39;)</span>
+<span class="sd">        True</span>
+
+<span class="sd">        &gt;&gt;&gt; isemail(&#39;invalidemail@&#39;)</span>
+<span class="sd">        False</span>
+
+<span class="sd">    :param value: string to validate email</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">patterns</span><span class="p">[</span><span class="s1">&#39;email&#39;</span><span class="p">],</span> <span class="n">value</span><span class="p">))</span></div>
+
+
+<span class="nd">@validate_str</span>
+<div class="viewcode-block" id="ishexadecimal"><a class="viewcode-back" href="../../usage.html#validus.ishexadecimal">[docs]</a><span class="k">def</span> <span class="nf">ishexadecimal</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return whether or not given value is a hexadecimal number.</span>
+<span class="sd">    If the value is a hexadecimal number, this function returns ``True``, otherwise ``False``.</span>
+
+<span class="sd">    Examples::</span>
+
+<span class="sd">        &gt;&gt;&gt; ishexadecimal(&#39;deadBEEF&#39;)</span>
+<span class="sd">        True</span>
+
+<span class="sd">        &gt;&gt;&gt; ishexadecimal(&#39;abcdefg&#39;)</span>
+<span class="sd">        False</span>
+
+<span class="sd">    :param value: string to validate hexadecimal number</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">patterns</span><span class="p">[</span><span class="s1">&#39;hexadecimal&#39;</span><span class="p">],</span> <span class="n">value</span><span class="p">))</span></div>
+
+
+<span class="nd">@validate_str</span>
+<div class="viewcode-block" id="ishexcolor"><a class="viewcode-back" href="../../usage.html#validus.ishexcolor">[docs]</a><span class="k">def</span> <span class="nf">ishexcolor</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return whether or not given value is a hexadecimal color.</span>
+<span class="sd">    If the value is a hexadecimal color, this function returns ``True``, otherwise ``False``.</span>
+
+<span class="sd">    Examples::</span>
+
+<span class="sd">        &gt;&gt;&gt; ishexcolor(&#39;#ff0034&#39;)</span>
+<span class="sd">        True</span>
+
+<span class="sd">        &gt;&gt;&gt; ishexcolor(&#39;#ff12FG&#39;)</span>
+<span class="sd">        False</span>
+
+<span class="sd">    :param value: string to validate hexadecimal color</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">patterns</span><span class="p">[</span><span class="s1">&#39;hex_color&#39;</span><span class="p">],</span> <span class="n">value</span><span class="p">))</span></div>
+
+
+<span class="nd">@validate_str</span>
+<div class="viewcode-block" id="isrgbcolor"><a class="viewcode-back" href="../../usage.html#validus.isrgbcolor">[docs]</a><span class="k">def</span> <span class="nf">isrgbcolor</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return whether or not given value is a rgb color.</span>
+<span class="sd">    If the value is a rgb color, this function returns ``True``, otherwise ``False``.</span>
+
+<span class="sd">    Examples::</span>
+
+<span class="sd">        &gt;&gt;&gt; isrgbcolor(&#39;rgb(0,31,255)&#39;)</span>
+<span class="sd">        True</span>
+
+<span class="sd">        &gt;&gt;&gt; isrgbcolor(&#39;rgb(1,349,275)&#39;)</span>
+<span class="sd">        False</span>
+
+<span class="sd">    :param value: string to validate rgb color</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">patterns</span><span class="p">[</span><span class="s1">&#39;rgb_color&#39;</span><span class="p">],</span> <span class="n">value</span><span class="p">))</span></div>
+
+
+<span class="nd">@validate_str</span>
+<div class="viewcode-block" id="isint"><a class="viewcode-back" href="../../usage.html#validus.isint">[docs]</a><span class="k">def</span> <span class="nf">isint</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return whether or not given value is an integer.</span>
+<span class="sd">    If the value is an integer, this function returns ``True``, otherwise ``False``.</span>
+
+<span class="sd">    Examples::</span>
+
+<span class="sd">        &gt;&gt;&gt; isint(&#39;-2147483648&#39;)</span>
+<span class="sd">        True</span>
+
+<span class="sd">        &gt;&gt;&gt; isint(&#39;123.123&#39;)</span>
+<span class="sd">        False</span>
+
+<span class="sd">    :param value: string to validate integer</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">value</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span> <span class="ow">and</span> <span class="nb">bool</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">patterns</span><span class="p">[</span><span class="s1">&#39;int&#39;</span><span class="p">],</span> <span class="n">value</span><span class="p">))</span></div>
+
+
+<span class="nd">@validate_str</span>
+<div class="viewcode-block" id="isfloat"><a class="viewcode-back" href="../../usage.html#validus.isfloat">[docs]</a><span class="k">def</span> <span class="nf">isfloat</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return whether or not given value is a float.</span>
+<span class="sd">    If the value is a float, this function returns ``True``, otherwise ``False``.</span>
+
+<span class="sd">    Examples::</span>
+
+<span class="sd">        &gt;&gt;&gt; isfloat(&#39;01.123&#39;)</span>
+<span class="sd">        True</span>
+
+<span class="sd">        &gt;&gt;&gt; isfloat(&#39;+1f&#39;)</span>
+<span class="sd">        False</span>
+
+<span class="sd">    :param value: string to validate float</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">value</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span> <span class="ow">and</span> <span class="nb">bool</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">patterns</span><span class="p">[</span><span class="s1">&#39;float&#39;</span><span class="p">],</span> <span class="n">value</span><span class="p">))</span></div>
+
+
+<span class="nd">@validate_str</span>
+<div class="viewcode-block" id="isslug"><a class="viewcode-back" href="../../usage.html#validus.isslug">[docs]</a><span class="k">def</span> <span class="nf">isslug</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Validate whether or not given value is valid slug.</span>
+<span class="sd">    Valid slug can contain only alphanumeric characters, hyphens and</span>
+<span class="sd">    underscores. If the value is a slug, this function returns ``True``, otherwise ``False``.</span>
+
+<span class="sd">    Examples::</span>
+
+<span class="sd">        &gt;&gt;&gt; isslug(&#39;my-slug-2134&#39;)</span>
+<span class="sd">        True</span>
+
+<span class="sd">        &gt;&gt;&gt; isslug(&#39;my.slug&#39;)</span>
+<span class="sd">        False</span>
+
+<span class="sd">    :param value: value to validate</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">patterns</span><span class="p">[</span><span class="s1">&#39;slug&#39;</span><span class="p">],</span> <span class="n">value</span><span class="p">))</span></div>
+
+
+<span class="nd">@validate_str</span>
+<div class="viewcode-block" id="isuuid"><a class="viewcode-back" href="../../usage.html#validus.isuuid">[docs]</a><span class="k">def</span> <span class="nf">isuuid</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return whether or not given value is a UUID (version 3, 4 or 5).</span>
+<span class="sd">    If the value is a UUID (version 3, 4 or 5), this function returns ``True``, otherwise ``False``.</span>
+
+<span class="sd">    Examples::</span>
+
+<span class="sd">        &gt;&gt;&gt; isuuid(&#39;a987fbc9-4bed-3078-cf07-9141ba07c9f3&#39;)</span>
+<span class="sd">        True</span>
+
+<span class="sd">        &gt;&gt;&gt; isuuid(&#39;xxxA987FBC9-4BED-3078-CF07-9141BA07C9F3&#39;)</span>
+<span class="sd">        False</span>
+
+<span class="sd">    :param value: string to validate UUID (version 3, 4 or 5)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">patterns</span><span class="p">[</span><span class="s1">&#39;uuid&#39;</span><span class="p">],</span> <span class="n">value</span><span class="p">))</span></div>
+
+
+<span class="nd">@validate_str</span>
+<div class="viewcode-block" id="isuuid3"><a class="viewcode-back" href="../../usage.html#validus.isuuid3">[docs]</a><span class="k">def</span> <span class="nf">isuuid3</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return whether or not given value is a UUID version 3.</span>
+<span class="sd">    If the value is a UUID version 3, this function returns ``True``, otherwise ``False``.</span>
+
+<span class="sd">    Examples::</span>
+
+<span class="sd">        &gt;&gt;&gt; isuuid3(&#39;A987FBC9-4BED-3078-CF07-9141BA07C9F3&#39;)</span>
+<span class="sd">        True</span>
+
+<span class="sd">        &gt;&gt;&gt; isuuid3(&#39;xxxA987FBC9-4BED-3078-CF07-9141BA07C9F3&#39;)</span>
+<span class="sd">        False</span>
+
+<span class="sd">    :param value: string to validate UUID version 3</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">patterns</span><span class="p">[</span><span class="s1">&#39;uuid3&#39;</span><span class="p">],</span> <span class="n">value</span><span class="p">))</span></div>
+
+
+<span class="nd">@validate_str</span>
+<div class="viewcode-block" id="isuuid4"><a class="viewcode-back" href="../../usage.html#validus.isuuid4">[docs]</a><span class="k">def</span> <span class="nf">isuuid4</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return whether or not given value is a UUID version 4.</span>
+<span class="sd">    If the value is a UUID version 4, this function returns ``True``, otherwise ``False``.</span>
+
+<span class="sd">    Examples::</span>
+
+<span class="sd">        &gt;&gt;&gt; isuuid4(&#39;713ae7e3-cb32-45f9-adcb-7c4fa86b90c1&#39;)</span>
+<span class="sd">        True</span>
+
+<span class="sd">        &gt;&gt;&gt; isuuid4(&#39;A987FBC9-4BED-3078-CF07-9141BA07C9F3&#39;)</span>
+<span class="sd">        False</span>
+
+<span class="sd">    :param value: string to validate UUID version 4</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">patterns</span><span class="p">[</span><span class="s1">&#39;uuid4&#39;</span><span class="p">],</span> <span class="n">value</span><span class="p">))</span></div>
+
+
+<span class="nd">@validate_str</span>
+<div class="viewcode-block" id="isuuid5"><a class="viewcode-back" href="../../usage.html#validus.isuuid5">[docs]</a><span class="k">def</span> <span class="nf">isuuid5</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return whether or not given value is a UUID version 5.</span>
+<span class="sd">    If the value is a UUID version 5, this function returns ``True``, otherwise ``False``.</span>
+
+<span class="sd">    Examples::</span>
+
+<span class="sd">        &gt;&gt;&gt; isuuid5(&#39;987FBC97-4BED-5078-AF07-9141BA07C9F3&#39;)</span>
+<span class="sd">        True</span>
+
+<span class="sd">        &gt;&gt;&gt; isuuid5(&#39;9c858901-8a57-4791-81fe-4c455b099bc9&#39;)</span>
+<span class="sd">        False</span>
+
+<span class="sd">    :param value: string to validate UUID version 5</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">patterns</span><span class="p">[</span><span class="s1">&#39;uuid5&#39;</span><span class="p">],</span> <span class="n">value</span><span class="p">))</span></div>
+
+
+<span class="nd">@validate_str</span>
+<div class="viewcode-block" id="isfullwidth"><a class="viewcode-back" href="../../usage.html#validus.isfullwidth">[docs]</a><span class="k">def</span> <span class="nf">isfullwidth</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return whether or not given value contains any full-width chars.</span>
+<span class="sd">    If the value contains any full-width chars, this function returns ``True``, otherwise ``False``.</span>
+
+<span class="sd">    Examples::</span>
+
+<span class="sd">        &gt;&gt;&gt; isfullwidth(&#39;３ー０　ａ＠ｃｏｍ&#39;)</span>
+<span class="sd">        True</span>
+
+<span class="sd">        &gt;&gt;&gt; isfullwidth(&#39;abc123&#39;)</span>
+<span class="sd">        False</span>
+
+<span class="sd">    :param value: string to validate full-width chars</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">patterns</span><span class="p">[</span><span class="s1">&#39;full_width&#39;</span><span class="p">],</span> <span class="n">value</span><span class="p">))</span></div>
+
+
+<span class="nd">@validate_str</span>
+<div class="viewcode-block" id="ishalfwidth"><a class="viewcode-back" href="../../usage.html#validus.ishalfwidth">[docs]</a><span class="k">def</span> <span class="nf">ishalfwidth</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return whether or not given value contains any half-width chars.</span>
+<span class="sd">    If the value contains any half-width chars, this function returns ``True``, otherwise ``False``.</span>
+
+<span class="sd">    Examples::</span>
+
+<span class="sd">        &gt;&gt;&gt; ishalfwidth(&#39;l-btn_02--active&#39;)</span>
+<span class="sd">        True</span>
+
+<span class="sd">        &gt;&gt;&gt; ishalfwidth(&#39;００１１&#39;)</span>
+<span class="sd">        False</span>
+
+<span class="sd">    :param value: string to validate half-width chars</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">patterns</span><span class="p">[</span><span class="s1">&#39;half_width&#39;</span><span class="p">],</span> <span class="n">value</span><span class="p">))</span></div>
+
+
+<span class="nd">@validate_str</span>
+<div class="viewcode-block" id="islatitude"><a class="viewcode-back" href="../../usage.html#validus.islatitude">[docs]</a><span class="k">def</span> <span class="nf">islatitude</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return whether or not given value is valid latitude.</span>
+<span class="sd">    If the value is valid latitude, this function returns ``True``, otherwise ``False``.</span>
+
+<span class="sd">    Examples::</span>
+
+<span class="sd">        &gt;&gt;&gt; islatitude(&#39;-90.000&#39;)</span>
+<span class="sd">        True</span>
+
+<span class="sd">        &gt;&gt;&gt; islatitude(&#39;+99.9&#39;)</span>
+<span class="sd">        False</span>
+
+<span class="sd">    :param value: string to validate latitude</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">patterns</span><span class="p">[</span><span class="s1">&#39;latitude&#39;</span><span class="p">],</span> <span class="n">value</span><span class="p">))</span></div>
+
+
+<span class="nd">@validate_str</span>
+<div class="viewcode-block" id="islongitude"><a class="viewcode-back" href="../../usage.html#validus.islongitude">[docs]</a><span class="k">def</span> <span class="nf">islongitude</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return whether or not given value is valid longitude.</span>
+<span class="sd">    If the value is valid longitude, this function returns ``True``, otherwise ``False``.</span>
+
+<span class="sd">    Examples::</span>
+
+<span class="sd">        &gt;&gt;&gt; islongitude(&#39;+73.234&#39;)</span>
+<span class="sd">        True</span>
+
+<span class="sd">        &gt;&gt;&gt; islongitude(&#39;180.1&#39;)</span>
+<span class="sd">        False</span>
+
+<span class="sd">    :param value: string to validate longitude</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">patterns</span><span class="p">[</span><span class="s1">&#39;longitude&#39;</span><span class="p">],</span> <span class="n">value</span><span class="p">))</span></div>
+
+
+<span class="nd">@validate_str</span>
+<div class="viewcode-block" id="ismac"><a class="viewcode-back" href="../../usage.html#validus.ismac">[docs]</a><span class="k">def</span> <span class="nf">ismac</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return whether or not given value is valid MAC address.</span>
+<span class="sd">    If the value is valid MAC address, this function returns ``True``, otherwise ``False``.</span>
+
+<span class="sd">    Examples::</span>
+
+<span class="sd">        &gt;&gt;&gt; ismac(&#39;3D:F2:C9:A6:B3:4F&#39;)</span>
+<span class="sd">        True</span>
+
+<span class="sd">        &gt;&gt;&gt; ismac(&#39;01:02:03:04:05&#39;)</span>
+<span class="sd">        False</span>
+
+<span class="sd">    :param value: string to validate MAC address</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">patterns</span><span class="p">[</span><span class="s1">&#39;mac&#39;</span><span class="p">],</span> <span class="n">value</span><span class="p">))</span></div>
+
+
+<span class="nd">@validate_str</span>
+<div class="viewcode-block" id="ismd5"><a class="viewcode-back" href="../../usage.html#validus.ismd5">[docs]</a><span class="k">def</span> <span class="nf">ismd5</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return whether or not given value is MD5 encoded.</span>
+<span class="sd">    If the value is MD5 encoded, this function returns ``True``, otherwise ``False``.</span>
+
+<span class="sd">    Examples::</span>
+
+<span class="sd">        &gt;&gt;&gt; ismd5(&#39;d94f3f016ae679c3008de268209132f2&#39;)</span>
+<span class="sd">        True</span>
+
+<span class="sd">        &gt;&gt;&gt; ismd5(&#39;KYT0bf1c35032a71a14c2f719e5a14c1&#39;)</span>
+<span class="sd">        False</span>
+
+<span class="sd">    :param value: string to validate MD5 encoding</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">patterns</span><span class="p">[</span><span class="s1">&#39;md5&#39;</span><span class="p">],</span> <span class="n">value</span><span class="p">))</span></div>
+
+
+<span class="nd">@validate_str</span>
+<div class="viewcode-block" id="ismongoid"><a class="viewcode-back" href="../../usage.html#validus.ismongoid">[docs]</a><span class="k">def</span> <span class="nf">ismongoid</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return whether or not given value is a valid hex-encoded representation of a MongoDB ObjectId.</span>
+<span class="sd">    If the value is a MongoDB ObjectId, this function returns ``True``, otherwise ``False``.</span>
+
+<span class="sd">    Examples::</span>
+
+<span class="sd">        &gt;&gt;&gt; ismongoid(&#39;507f1f77bcf86cd799439011&#39;)</span>
+<span class="sd">        True</span>
+
+<span class="sd">        &gt;&gt;&gt; ismongoid(&#39;507f1f77bcf86cd7994390&#39;)</span>
+<span class="sd">        False</span>
+
+<span class="sd">    :param value: string to validate MongoDB ObjectId</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">ishexadecimal</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">==</span> <span class="mi">24</span></div>
+
+
+<span class="nd">@validate_str</span>
+<div class="viewcode-block" id="isiso8601"><a class="viewcode-back" href="../../usage.html#validus.isiso8601">[docs]</a><span class="k">def</span> <span class="nf">isiso8601</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return whether or not given value is ISO 8601 date.</span>
+<span class="sd">    If the value is ISO 8601 date, this function returns ``True``, otherwise ``False``.</span>
+
+<span class="sd">    Examples::</span>
+
+<span class="sd">        &gt;&gt;&gt; isiso8601(&#39;2009-12T12:34&#39;)</span>
+<span class="sd">        True</span>
+
+<span class="sd">        &gt;&gt;&gt; isiso8601(&#39;2009367&#39;)</span>
+<span class="sd">        False</span>
+
+<span class="sd">    :param value: string to validate ISO 8601 date</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">patterns</span><span class="p">[</span><span class="s1">&#39;iso8601&#39;</span><span class="p">],</span> <span class="n">value</span><span class="p">))</span></div>
+
+
+<span class="nd">@validate_str</span>
+<div class="viewcode-block" id="isipv4"><a class="viewcode-back" href="../../usage.html#validus.isipv4">[docs]</a><span class="k">def</span> <span class="nf">isipv4</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return whether or not given value is an IP version 4.</span>
+<span class="sd">    If the value is an IP version 4, this function returns ``True``, otherwise ``False``.</span>
+
+<span class="sd">    Examples::</span>
+
+<span class="sd">        &gt;&gt;&gt; isipv4(&#39;127.0.0.1&#39;)</span>
+<span class="sd">        True</span>
+
+<span class="sd">        &gt;&gt;&gt; isipv4(&#39;::1&#39;)</span>
+<span class="sd">        False</span>
+
+<span class="sd">    :param value: string to validate IP version 4</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">ip_addr</span> <span class="o">=</span> <span class="n">ipaddress</span><span class="o">.</span><span class="n">IPv4Address</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">ipaddress</span><span class="o">.</span><span class="n">AddressValueError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="n">ip_addr</span><span class="o">.</span><span class="n">version</span> <span class="o">==</span> <span class="mi">4</span></div>
+
+
+<span class="nd">@validate_str</span>
+<div class="viewcode-block" id="isipv6"><a class="viewcode-back" href="../../usage.html#validus.isipv6">[docs]</a><span class="k">def</span> <span class="nf">isipv6</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return whether or not given value is an IP version 6.</span>
+<span class="sd">    If the value is an IP version 6, this function returns ``True``, otherwise ``False``.</span>
+
+<span class="sd">    Examples::</span>
+
+<span class="sd">        &gt;&gt;&gt; isipv6(&#39;2001:41d0:2:a141::1&#39;)</span>
+<span class="sd">        True</span>
+
+<span class="sd">        &gt;&gt;&gt; isipv6(&#39;127.0.0.1&#39;)</span>
+<span class="sd">        False</span>
+
+<span class="sd">    :param value: string to validate IP version 6</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">ip_addr</span> <span class="o">=</span> <span class="n">ipaddress</span><span class="o">.</span><span class="n">IPv6Address</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+    <span class="k">except</span> <span class="n">ipaddress</span><span class="o">.</span><span class="n">AddressValueError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="n">ip_addr</span><span class="o">.</span><span class="n">version</span> <span class="o">==</span> <span class="mi">6</span></div>
+
+
+<span class="nd">@validate_str</span>
+<div class="viewcode-block" id="isip"><a class="viewcode-back" href="../../usage.html#validus.isip">[docs]</a><span class="k">def</span> <span class="nf">isip</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return whether or not given value is an IP version 4 or 6.</span>
+<span class="sd">    If the value is an IP version 4 or 6, this function returns ``True``, otherwise ``False``.</span>
+
+<span class="sd">    Examples::</span>
+
+<span class="sd">        &gt;&gt;&gt; isip(&#39;127.0.0.1&#39;)</span>
+<span class="sd">        True</span>
+
+<span class="sd">        &gt;&gt;&gt; isip(&#39;0200.200.200.200&#39;)</span>
+<span class="sd">        False</span>
+
+<span class="sd">    :param value: string to validate IP version 4 or 6</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">isipv4</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="ow">or</span> <span class="n">isipv6</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></div>
+
+
+<span class="nd">@validate_str</span>
+<div class="viewcode-block" id="isport"><a class="viewcode-back" href="../../usage.html#validus.isport">[docs]</a><span class="k">def</span> <span class="nf">isport</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return whether or not given value represents a valid port.</span>
+<span class="sd">    If the value represents a valid port, this function returns ``True``, otherwise ``False``.</span>
+
+<span class="sd">    Examples::</span>
+
+<span class="sd">        &gt;&gt;&gt; isport(&#39;8080&#39;)</span>
+<span class="sd">        True</span>
+
+<span class="sd">        &gt;&gt;&gt; isport(&#39;65536&#39;)</span>
+<span class="sd">        False</span>
+
+<span class="sd">    :param value: string to validate port</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">port</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="n">port</span> <span class="o">&lt;</span> <span class="mi">65536</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<span class="nd">@validate_str</span>
+<div class="viewcode-block" id="isdns"><a class="viewcode-back" href="../../usage.html#validus.isdns">[docs]</a><span class="k">def</span> <span class="nf">isdns</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return whether or not given value represents a valid DNS name.</span>
+<span class="sd">    If the value represents a valid DNS name, this function returns ``True``, otherwise ``False``.</span>
+
+<span class="sd">    Examples::</span>
+
+<span class="sd">        &gt;&gt;&gt; isdns(&#39;localhost&#39;)</span>
+<span class="sd">        True</span>
+
+<span class="sd">        &gt;&gt;&gt; isdns(&#39;a.b..&#39;)</span>
+<span class="sd">        False</span>
+
+<span class="sd">    :param value: string to validate DNS name</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">value</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span> <span class="o">&gt;</span> <span class="mi">255</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="p">(</span><span class="ow">not</span> <span class="n">isip</span><span class="p">(</span><span class="n">value</span><span class="p">))</span> <span class="ow">and</span> <span class="nb">bool</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">patterns</span><span class="p">[</span><span class="s1">&#39;dns&#39;</span><span class="p">],</span> <span class="n">value</span><span class="p">))</span></div>
+
+
+<span class="nd">@validate_str</span>
+<div class="viewcode-block" id="isssn"><a class="viewcode-back" href="../../usage.html#validus.isssn">[docs]</a><span class="k">def</span> <span class="nf">isssn</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return whether or not given value is a U.S. Social Security Number.</span>
+<span class="sd">    If the value is a U.S. Social Security Number, this function returns ``True``, otherwise ``False``.</span>
+
+<span class="sd">    Examples::</span>
+
+<span class="sd">        &gt;&gt;&gt; isssn(&#39;191 60 2869&#39;)</span>
+<span class="sd">        True</span>
+
+<span class="sd">        &gt;&gt;&gt; isssn(&#39;66690-76&#39;)</span>
+<span class="sd">        False</span>
+
+<span class="sd">    :param value: string to validate U.S. Social Security Number</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">value</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">11</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">patterns</span><span class="p">[</span><span class="s1">&#39;ssn&#39;</span><span class="p">],</span> <span class="n">value</span><span class="p">))</span></div>
+
+
+<span class="nd">@validate_str</span>
+<div class="viewcode-block" id="issemver"><a class="viewcode-back" href="../../usage.html#validus.issemver">[docs]</a><span class="k">def</span> <span class="nf">issemver</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return whether or not given value is valid semantic version.</span>
+<span class="sd">    If the value is valid semantic version, this function returns ``True``, otherwise ``False``.</span>
+
+<span class="sd">    Examples::</span>
+
+<span class="sd">        &gt;&gt;&gt; issemver(&#39;v1.0.0&#39;)</span>
+<span class="sd">        True</span>
+
+<span class="sd">        &gt;&gt;&gt; issemver(&#39;1.1.01&#39;)</span>
+<span class="sd">        False</span>
+
+<span class="sd">    :param value: string to validate semantic version</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">patterns</span><span class="p">[</span><span class="s1">&#39;semver&#39;</span><span class="p">],</span> <span class="n">value</span><span class="p">))</span></div>
+
+
+<span class="nd">@validate_str</span>
+<div class="viewcode-block" id="isbytelen"><a class="viewcode-back" href="../../usage.html#validus.isbytelen">[docs]</a><span class="k">def</span> <span class="nf">isbytelen</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">minimum</span><span class="p">,</span> <span class="n">maximum</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return whether or not given value&#39;s length (in bytes) falls in a range.</span>
+<span class="sd">    If the value&#39;s length (in bytes) falls in a range, this function returns ``True``, otherwise ``False``.</span>
+
+<span class="sd">    Examples::</span>
+
+<span class="sd">        &gt;&gt;&gt; isbytelen(&#39;123456&#39;, 0, 100)</span>
+<span class="sd">        True</span>
+
+<span class="sd">        &gt;&gt;&gt; isbytelen(&#39;1239999&#39;, 0, 1)</span>
+<span class="sd">        False</span>
+
+<span class="sd">    :param value: string to validate length (in bytes) falls in a range</span>
+<span class="sd">    :param minimum: minimum value of the range in integer</span>
+<span class="sd">    :param maximum: maximum value of the range in integer</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">minimum</span> <span class="o">&lt;=</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">maximum</span></div>
+
+
+<span class="nd">@validate_str</span>
+<div class="viewcode-block" id="ismultibyte"><a class="viewcode-back" href="../../usage.html#validus.ismultibyte">[docs]</a><span class="k">def</span> <span class="nf">ismultibyte</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return whether or not given value contains one or more multibyte chars.</span>
+<span class="sd">    If the value contains one or more multibyte chars, this function returns ``True``, otherwise ``False``.</span>
+
+<span class="sd">    Examples::</span>
+
+<span class="sd">        &gt;&gt;&gt; ismultibyte(&#39;あいうえお foobar&#39;)</span>
+<span class="sd">        True</span>
+
+<span class="sd">        &gt;&gt;&gt; ismultibyte(&#39;abc&#39;)</span>
+<span class="sd">        False</span>
+
+<span class="sd">    :param value: string to validate one or more multibyte chars</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">patterns</span><span class="p">[</span><span class="s1">&#39;multi_byte&#39;</span><span class="p">],</span> <span class="n">value</span><span class="p">))</span></div>
+
+
+<span class="nd">@validate_str</span>
+<div class="viewcode-block" id="isfilepath"><a class="viewcode-back" href="../../usage.html#validus.isfilepath">[docs]</a><span class="k">def</span> <span class="nf">isfilepath</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return whether or not given value is Win or Unix file path and returns it&#39;s type.</span>
+<span class="sd">    If the value is Win or Unix file path, this function returns ``True, Type``, otherwise ``False, Type``.</span>
+
+<span class="sd">    Examples::</span>
+
+<span class="sd">        &gt;&gt;&gt; isfilepath(&#39;c:\\path\\file (x86)\\bar&#39;)</span>
+<span class="sd">        True, &#39;Win&#39;</span>
+
+<span class="sd">        &gt;&gt;&gt; isfilepath(&#39;/path&#39;)</span>
+<span class="sd">        True, &#39;Unix&#39;</span>
+
+<span class="sd">        &gt;&gt;&gt; isfilepath(&#39;c:/path/file/&#39;)</span>
+<span class="sd">        False, &#39;Unknown&#39;</span>
+
+<span class="sd">    :param value: string to validate file path</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">patterns</span><span class="p">[</span><span class="s1">&#39;win_path&#39;</span><span class="p">],</span> <span class="n">value</span><span class="p">):</span>
+        <span class="c1"># check windows path limit see:</span>
+        <span class="c1"># http://msdn.microsoft.com/en-us/library/aa365247(VS.85).aspx#maxpath</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="mi">3</span><span class="p">:])</span> <span class="o">&gt;</span> <span class="mi">32767</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;Win&#39;</span>
+        <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;Win&#39;</span>
+    <span class="k">elif</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">patterns</span><span class="p">[</span><span class="s1">&#39;unix_path&#39;</span><span class="p">],</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="s1">&#39;Unix&#39;</span>
+    <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s1">&#39;Unknown&#39;</span></div>
+
+
+<span class="nd">@validate_str</span>
+<div class="viewcode-block" id="isdatauri"><a class="viewcode-back" href="../../usage.html#validus.isdatauri">[docs]</a><span class="k">def</span> <span class="nf">isdatauri</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return whether or not given value is base64 encoded data URI such as an image.</span>
+<span class="sd">    If the value is base64 encoded data URI, this function returns ``True``, otherwise ``False``.</span>
+
+<span class="sd">    Examples::</span>
+
+<span class="sd">        &gt;&gt;&gt; isdatauri(&#39;data:text/plain;base64,Vml2YW11cyBmZXJtZW50dW0gc2VtcGVyIHBvcnRhLg==&#39;)</span>
+<span class="sd">        True</span>
+
+<span class="sd">        &gt;&gt;&gt; isdatauri(&#39;dataxbase64data:HelloWorld&#39;)</span>
+<span class="sd">        False</span>
+
+<span class="sd">    :param value: string to validate base64 encoded data URI</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">patterns</span><span class="p">[</span><span class="s1">&#39;data_uri&#39;</span><span class="p">],</span> <span class="n">value</span><span class="p">))</span></div>
+
+
+<span class="nd">@validate_str</span>
+<div class="viewcode-block" id="isjson"><a class="viewcode-back" href="../../usage.html#validus.isjson">[docs]</a><span class="k">def</span> <span class="nf">isjson</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return whether or not given value is valid JSON.</span>
+<span class="sd">    If the value is valid JSON, this function returns ``True``, otherwise ``False``.</span>
+
+<span class="sd">    Examples::</span>
+
+<span class="sd">        &gt;&gt;&gt; isjson(&#39;{&quot;Key&quot;: {&quot;Key&quot;: {&quot;Key&quot;: 123}}}&#39;)</span>
+<span class="sd">        True</span>
+
+<span class="sd">        &gt;&gt;&gt; isjson(&#39;{ key: &quot;value&quot; }&#39;)</span>
+<span class="sd">        False</span>
+
+<span class="sd">    :param value: string to validate JSON</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">decoded_json</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="kc">True</span></div>
+
+
+<span class="nd">@validate_str</span>
+<div class="viewcode-block" id="istime"><a class="viewcode-back" href="../../usage.html#validus.istime">[docs]</a><span class="k">def</span> <span class="nf">istime</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">fmt</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return whether or not given value is valid time according to given format.</span>
+<span class="sd">    If the value is valid time, this function returns ``True``, otherwise ``False``.</span>
+
+<span class="sd">    Examples::</span>
+
+<span class="sd">        &gt;&gt;&gt; istime(&#39;30 Nov 00&#39;, &#39;%d %b %y&#39;)</span>
+<span class="sd">        True</span>
+
+<span class="sd">        &gt;&gt;&gt; istime(&#39;Friday&#39;, &#39;%d&#39;)</span>
+<span class="sd">        False</span>
+
+<span class="sd">    :param value: string to validate time</span>
+<span class="sd">    :param fmt: format of time</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">time_obj</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">fmt</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="kc">True</span></div>
+
+
+<span class="nd">@validate_str</span>
+<div class="viewcode-block" id="isurl"><a class="viewcode-back" href="../../usage.html#validus.isurl">[docs]</a><span class="k">def</span> <span class="nf">isurl</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return whether or not given value is an URL.</span>
+<span class="sd">    If the value is an URL, this function returns ``True``, otherwise ``False``.</span>
+
+<span class="sd">    Examples::</span>
+
+<span class="sd">        &gt;&gt;&gt; isurl(&#39;http://foo.bar#com&#39;)</span>
+<span class="sd">        True</span>
+
+<span class="sd">        &gt;&gt;&gt; isurl(&#39;http://foobar.c_o_m&#39;)</span>
+<span class="sd">        False</span>
+
+<span class="sd">    :param value: string to validate URL</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">value</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">2083</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">patterns</span><span class="p">[</span><span class="s1">&#39;url&#39;</span><span class="p">],</span> <span class="n">value</span><span class="p">))</span></div>
+
+
+<span class="nd">@validate_str</span>
+<div class="viewcode-block" id="iscrcard"><a class="viewcode-back" href="../../usage.html#validus.iscrcard">[docs]</a><span class="k">def</span> <span class="nf">iscrcard</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return whether or not given value is a credit card.</span>
+<span class="sd">    If the value is a credit card, this function returns ``True``, otherwise ``False``.</span>
+
+<span class="sd">    Examples::</span>
+
+<span class="sd">        &gt;&gt;&gt; iscrcard(&#39;375556917985515&#39;)</span>
+<span class="sd">        True</span>
+
+<span class="sd">        &gt;&gt;&gt; iscrcard(&#39;5398228707871528&#39;)</span>
+<span class="sd">        False</span>
+
+<span class="sd">    :param value: string to validate credit card</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">sanitized</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;[^0-9]+&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">patterns</span><span class="p">[</span><span class="s1">&#39;credit_card&#39;</span><span class="p">],</span> <span class="n">sanitized</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="n">summation</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">should_double</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sanitized</span><span class="p">))):</span>
+        <span class="n">digit</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">sanitized</span><span class="p">[</span><span class="n">i</span><span class="p">:</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">should_double</span><span class="p">:</span>
+            <span class="n">digit</span> <span class="o">*=</span> <span class="mi">2</span>
+            <span class="k">if</span> <span class="n">digit</span> <span class="o">&gt;=</span> <span class="mi">10</span><span class="p">:</span>
+                <span class="n">summation</span> <span class="o">+=</span> <span class="p">(</span><span class="n">digit</span> <span class="o">%</span> <span class="mi">10</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">summation</span> <span class="o">+=</span> <span class="n">digit</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">summation</span> <span class="o">+=</span> <span class="n">digit</span>
+        <span class="n">should_double</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">should_double</span>
+    <span class="k">if</span> <span class="n">summation</span> <span class="o">%</span> <span class="mi">10</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<span class="nd">@validate_str</span>
+<div class="viewcode-block" id="isisin"><a class="viewcode-back" href="../../usage.html#validus.isisin">[docs]</a><span class="k">def</span> <span class="nf">isisin</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return whether or not given value is valid International Securities Identification Number.</span>
+<span class="sd">    If the value is a valid ISIN, this function returns ``True``, otherwise ``False``.</span>
+
+<span class="sd">    Examples::</span>
+
+<span class="sd">        &gt;&gt;&gt; isisin(&#39;AU0000XVGZA3&#39;)</span>
+<span class="sd">        True</span>
+
+<span class="sd">        &gt;&gt;&gt; isisin(&#39;DE000BAY0018&#39;)</span>
+<span class="sd">        False</span>
+
+<span class="sd">    :param value: string to validate ISIN</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">patterns</span><span class="p">[</span><span class="s1">&#39;isin&#39;</span><span class="p">],</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="n">checksum_str</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;[A-Z]&#39;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">ch</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">ch</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span> <span class="mi">36</span><span class="p">)),</span> <span class="n">value</span><span class="p">)</span>
+    <span class="n">summation</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">should_double</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">checksum_str</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">::</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+        <span class="n">digit</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">should_double</span><span class="p">:</span>
+            <span class="n">digit</span> <span class="o">*=</span> <span class="mi">2</span>
+            <span class="k">if</span> <span class="n">digit</span> <span class="o">&gt;=</span> <span class="mi">10</span><span class="p">:</span>
+                <span class="n">summation</span> <span class="o">+=</span> <span class="p">(</span><span class="n">digit</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">summation</span> <span class="o">+=</span> <span class="n">digit</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">summation</span> <span class="o">+=</span> <span class="n">digit</span>
+        <span class="n">should_double</span> <span class="o">=</span> <span class="ow">not</span> <span class="n">should_double</span>
+
+    <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">==</span> <span class="p">(</span><span class="mi">10000</span> <span class="o">-</span> <span class="n">summation</span><span class="p">)</span> <span class="o">%</span> <span class="mi">10</span></div>
+
+
+<span class="nd">@validate_str</span>
+<div class="viewcode-block" id="isiban"><a class="viewcode-back" href="../../usage.html#validus.isiban">[docs]</a><span class="k">def</span> <span class="nf">isiban</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Return whether or not given value is a valid IBAN code.</span>
+<span class="sd">    If the value is a valid IBAN, this function returns ``True``, otherwise ``False``.</span>
+
+<span class="sd">    Examples::</span>
+
+<span class="sd">        &gt;&gt;&gt; isiban(&#39;DE29100500001061045672&#39;)</span>
+<span class="sd">        True</span>
+
+<span class="sd">        &gt;&gt;&gt; isiban(&#39;NO9186011117947&#39;)</span>
+<span class="sd">        False</span>
+
+<span class="sd">    :param value: string to validate IBAN code</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">cleaned_value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="n">iban</span> <span class="o">=</span> <span class="n">cleaned_value</span><span class="p">[</span><span class="mi">4</span><span class="p">:]</span> <span class="o">+</span> <span class="n">cleaned_value</span><span class="p">[:</span><span class="mi">4</span><span class="p">]</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">patterns</span><span class="p">[</span><span class="s1">&#39;iban&#39;</span><span class="p">],</span> <span class="n">cleaned_value</span><span class="p">):</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="n">digits</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">ch</span><span class="p">,</span> <span class="mi">36</span><span class="p">))</span> <span class="k">for</span> <span class="n">ch</span> <span class="ow">in</span> <span class="n">iban</span><span class="p">))</span>  <span class="c1"># BASE 36: 0..9,A..Z -&gt; 0..35</span>
+    <span class="k">return</span> <span class="n">digits</span> <span class="o">%</span> <span class="mi">97</span> <span class="o">==</span> <span class="mi">1</span></div>
+
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">validus</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../readme.html">validus</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../authors.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../history.html">History</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Rafiqul Hasan.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.8</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
