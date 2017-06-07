@@ -28,7 +28,7 @@ A dead simple Python data validation library. It supports Python 3 only.
 Resources
 ---------
 
-- `Documentation <https://validus.readthedocs.io/>`_
+- `Documentation <http://shopnilsazal.github.io/validus/>`_
 - `Issue Tracker <http://github.com/shopnilsazal/validus/issues>`_
 - `Code <http://github.com/shopnilsazal/validus/>`_
 
