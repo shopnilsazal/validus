@@ -10,11 +10,11 @@ validus
         :target: https://travis-ci.org/shopnilsazal/validus
 
 .. image:: https://readthedocs.org/projects/validus/badge/?version=latest
-        :target: https://validus.readthedocs.io/en/latest/?badge=latest
+A dead simple Python data validation library.        :target: https://validus.readthedocs.io/en/latest/?badge=latest
         :alt: Documentation Status
 
 
-A dead simple Python data validation library. It supports Python 3 only.
+ It supports Python 3 only.
 
 .. code-block:: python
 
