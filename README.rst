@@ -12,6 +12,11 @@ validus
 
 A dead simple Python data validation library. It supports Python 3 only.
 
+.. code-block:: bash
+
+    pip install validus
+
+
 .. code-block:: python
 
     >>> import validus
