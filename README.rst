@@ -4,10 +4,10 @@ Validus
 
 
 .. image:: https://img.shields.io/pypi/v/validus.svg
-:target: https://pypi.python.org/pypi/validus
+        :target: https://pypi.python.org/pypi/validus
 
 .. image:: https://img.shields.io/travis/shopnilsazal/validus.svg
-:target: https://travis-ci.org/shopnilsazal/validus
+        :target: https://travis-ci.org/shopnilsazal/validus
 
 
 A dead simple Python data validation library.
