@@ -42,6 +42,7 @@ List of Functions
 -----------------
 
 .. code-block:: python
+
     isascii()
     isprintascii()
     isbase64()
