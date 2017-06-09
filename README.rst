@@ -1,21 +1,34 @@
 =======
-validus
+Validus
 =======
 
 
 .. image:: https://img.shields.io/pypi/v/validus.svg
-        :target: https://pypi.python.org/pypi/validus
+:target: https://pypi.python.org/pypi/validus
 
 .. image:: https://img.shields.io/travis/shopnilsazal/validus.svg
-        :target: https://travis-ci.org/shopnilsazal/validus
+:target: https://travis-ci.org/shopnilsazal/validus
 
 
-A dead simple Python data validation library. It supports Python 3 only.
+A dead simple Python data validation library.
+
+
+Requirements
+------------
+
+- Python 3.3+
+
+
+Installation
+------------
 
 .. code-block:: bash
 
     pip install validus
 
+
+Usage
+-----
 
 .. code-block:: python
 
@@ -23,6 +36,55 @@ A dead simple Python data validation library. It supports Python 3 only.
 
     >>> validus.isemail('someone@example.com')
     True
+
+
+List of Functions
+-----------------
+
+.. code-block:: python
+    isascii()
+    isprintascii()
+    isbase64()
+    isemail()
+    ishexadecimal()
+    isint()
+    isfloat()
+    isslug()
+    isuuid()
+    isuuid3()
+    isuuid4()
+    isuuid5()
+    isfullwidth()
+    ishalfwidth()
+    islatitude()
+    islongitude()
+    ismac()
+    ismd5()
+    ismongoid()
+    isiso8601()
+    isbytelen()
+    isipv4()
+    isipv6()
+    isip()
+    isport()
+    isdns()
+    isssn()
+    issemver()
+    ismultibyte()
+    isfilepath()
+    isdatauri()
+    isjson()
+    istime()
+    isurl()
+    iscrcard()
+    isisin()
+    isiban()
+    ishexcolor()
+    isrgbcolor()
+    isphone()
+    isisbn()
+    isisbn10()
+    isisbn13()
 
 
 
