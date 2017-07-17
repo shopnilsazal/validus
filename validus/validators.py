@@ -435,10 +435,10 @@ def issha1(value):
 
     Examples::
 
-        >>> ismd5('1bc6b8a58b484bdb6aa5264dc554934e3e46c405')
+        >>> issha1('1bc6b8a58b484bdb6aa5264dc554934e3e46c405')
         True
 
-        >>> ismd5('ZKYT059dbf1c356032a7b1a1d4c2f719e5a14c1')
+        >>> issha1('ZKYT059dbf1c356032a7b1a1d4c2f719e5a14c1')
         False
 
     :param value: string to validate SHA1 encoding
