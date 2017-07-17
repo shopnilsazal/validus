@@ -38,7 +38,8 @@ patterns = {
     'slug': r'^[-a-zA-Z0-9_]+$',
     'semver': r'^v?(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(-(0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(\.(0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*)?(\+[0-9a-zA-Z-]+(\.[0-9a-zA-Z-]+)*)?$',
     'win_path': r'^[a-zA-Z]:\\(?:[^\\/:*?"<>|\r\n]+\\)*[^\\/:*?"<>|\r\n]*$',
-    'unix_path': r'^(/[^/\x00]*)+/?$'
+    'unix_path': r'^(/[^/\x00]*)+/?$',
+    'imei': r'^[0-9]{15}$'
 
 }
 
@@ -869,3 +870,40 @@ def isiban(value):
     digits = int(''.join(str(int(ch, 36)) for ch in iban))  # BASE 36: 0..9,A..Z -> 0..35
     return digits % 97 == 1
 
+
+@validate_str
+def isimei(value):
+    """
+    Return whether or not given value is an imei.
+    If the value is an imei, this function returns ``True``, otherwise ``False``.
+
+    Examples::
+
+        >>> isimei('565464561111118')
+        True
+
+        >>> isimei('123456789012341')
+        False
+
+    :param value: string to validate imei
+    """
+    sanitized = re.sub(r'[ -]', '', value)
+    if not re.match(patterns['imei'], sanitized):
+        return False
+
+    shouldDouble = True
+    totalSum = 0
+    for digit in reversed(sanitized[:-1]):
+        digitInt = int(digit)
+        if (shouldDouble):
+            digitInt = digitInt * 2
+
+        if (digitInt >= 10):
+            totalSum += (digitInt - 9)
+        else:
+            totalSum += digitInt
+        shouldDouble = not shouldDouble
+    if (str(10 - (totalSum % 10))[-1] == sanitized[-1]):
+        return True
+    else:
+        return False

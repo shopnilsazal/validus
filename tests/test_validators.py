@@ -446,4 +446,16 @@ class TestValidators(unittest.TestCase):
         self.assertFalse(validus.isiban('GB81WEST12345698765432'))
         self.assertFalse(validus.isiban('NO9186011117947'))
 
+    def test_isimei(self):
+        self.assertTrue(validus.isimei('351451208401216'))
+        self.assertTrue(validus.isimei('351451-20-840121-6'))
+        self.assertTrue(validus.isimei('351451-20-840121 6'))
+        self.assertTrue(validus.isimei('565464561111118'))
+        self.assertTrue(validus.isimei('56 546456 111111 8'))
+        self.assertTrue(validus.isimei('101010101010400'))
 
+        self.assertFalse(validus.isimei('565464561111110'))
+        self.assertFalse(validus.isimei('565464561111not'))
+        self.assertFalse(validus.isimei('5654645611'))
+        self.assertFalse(validus.isimei('not1m3i00001010'))
+        self.assertFalse(validus.isimei('22201751038607631'))

@@ -13,5 +13,5 @@ from .validators import isfullwidth, ishalfwidth, islatitude, islongitude
 from .validators import ismac, ismd5, ismongoid, isiso8601, isbytelen
 from .validators import isipv4, isipv6, isip, isport, isdns, isssn, issemver
 from .validators import ismultibyte, isfilepath, isdatauri, isjson, istime, isurl
-from .validators import iscrcard, isisin, isiban, ishexcolor, isrgbcolor
+from .validators import iscrcard, isisin, isiban, ishexcolor, isrgbcolor, isimei
 
