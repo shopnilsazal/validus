@@ -391,13 +391,13 @@ class TestValidators(unittest.TestCase):
         self.assertFalse(validus.istime('Friday', '%d'))
 
     def test_isepoch(self):
-        self.assertTrue(validus.isepoch(-62135633092))
-        self.assertTrue(validus.isepoch(1500279525))
-        self.assertTrue(validus.isepoch(253402261199))
+        self.assertTrue(validus.isepoch('-62135633092'))
+        self.assertTrue(validus.isepoch('1500279525'))
+        self.assertTrue(validus.isepoch('253402261199'))
         
         self.assertFalse(validus.isepoch('foo'))
-        self.assertFalse(validus.isepoch(-62135633093))
-        self.assertFalse(validus.isepoch(253402261200))
+        self.assertFalse(validus.isepoch('-62135633093'))
+        self.assertFalse(validus.isepoch('253402261200'))
 
     def test_isurl(self):
         self.assertTrue(validus.isurl('http://foo.bar#com'))

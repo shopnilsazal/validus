@@ -751,6 +751,7 @@ def istime(value, fmt):
     return True
 
 
+@validate_str
 def isepoch(value):
     """
     Return whether or not given value is valid epoch time.
@@ -764,10 +765,10 @@ def isepoch(value):
         >>> istime('foo')
         False
 
-    :param value: integer to validate time
+    :param value: string to validate time
     """
     try:
-        dt_obj = datetime.fromtimestamp(value)
+        dt_obj = datetime.fromtimestamp(float(value))
     except ValueError:
         return False
     except TypeError:
