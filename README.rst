@@ -76,6 +76,7 @@ List of Functions
     isdatauri()
     isjson()
     istime()
+    isepoch()
     isurl()
     iscrcard()
     isisin()
