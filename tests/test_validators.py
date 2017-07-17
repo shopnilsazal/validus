@@ -223,6 +223,37 @@ class TestValidators(unittest.TestCase):
         self.assertFalse(validus.ismd5('39485729348'))
         self.assertFalse(validus.ismd5('%&FHKJFvk'))
 
+    def test_issha1(self):
+        self.assertTrue(validus.issha1('1bc6b8a58b484bdb6aa5264dc554934e3e46c405'))
+        self.assertTrue(validus.issha1('d545e28504c797ee8f26d3f482ea1a2485d0b018'))
+        self.assertTrue(validus.issha1('56Dae00e614d8F24dfd544483f209a2D9e21e57A'))
+
+        self.assertFalse(validus.issha1('d545e28504c797ee8f26d3f482ea1a2485d0b018777'))
+        self.assertFalse(validus.issha1('ZKYT059dbf1c356032a7b1a1d4c2f719e5a14c1'))
+        self.assertFalse(validus.issha1('q94375dj93458w34'))
+        self.assertFalse(validus.issha1('84375958454'))
+        self.assertFalse(validus.issha1('*!FHPJFvc'))
+
+    def test_issha256(self):
+        self.assertTrue(validus.issha256('fd04c4a99b6b1f118452da33dfe9523ec164f5fecde4502b69f1ed3f24a29ff6'))
+        self.assertTrue(validus.issha256('4523475627356732465783465723675623562365736592656273465926357236'))
+        self.assertTrue(validus.issha256('AA090789a99b6b90789245234523C952ae856744352d32452b634F5D34a29fDD'))
+
+        self.assertFalse(validus.issha256('fd04c4a99b6b1f118452da33dfe9523ec164f5fecde4502b6945f1ed3f24a29ff6'))
+        self.assertFalse(validus.issha256('q94375dj93458w34'))
+        self.assertFalse(validus.issha256('84375958454'))
+        self.assertFalse(validus.issha256('\\M$""'))
+
+    def test_issha512(self):
+        self.assertTrue(validus.issha512('0b696861da778f6bd0d899ad9a581f4b9b1eb8286eaba266d2f2e2767539055bf8eb59e8884839a268141aba1ef078ce67cf94d421bd1195a3c0e817f5f7b286'))
+        self.assertTrue(validus.issha512('45723405723485723475275235567576454134134684623196443436423641641242153645167451294512345912354123549123546125394125452194531293'))
+        self.assertTrue(validus.issha512('AA090789a99b6b90789245234523C952ae856744352d32452b634F5D34a29fDDAA090789a99b6b90789245234523C952ae856744352d32452b634F5D34a29fDD'))
+
+        self.assertFalse(validus.issha512('0b696861da778f6bd0d899ad9a581f4b9b1eb8286eaba266d2f2e2767539055bf8eb59e8884839a268141aba1ef078ce67cf94d421bd1195a3c0e817f5f7b286555'))
+        self.assertFalse(validus.issha512('KLO4545ID55545789Hg545235F45255452Hgf76DJF56HgKJfg3456356356346534534653456sghey45656jhgjfgghdfhgdfhdfhdfhdfhghhq94375dj93458w34'))
+        self.assertFalse(validus.issha512('975'))
+        self.assertFalse(validus.issha512('*)^&!MNdf67657'))
+
     def test_ismongoid(self):
         self.assertTrue(validus.ismongoid('507f1f77bcf86cd799439011'))
         self.assertFalse(validus.ismongoid('507f1f77bcf86cd7994390'))
