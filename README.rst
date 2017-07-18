@@ -89,6 +89,7 @@ List of Functions
     isisbn()
     isisbn10()
     isisbn13()
+    isimei()
 
 
 
