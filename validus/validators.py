@@ -21,6 +21,9 @@ patterns = {
     'uuid5': r"^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-5[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$",
     'uuid': r"^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
     'md5': r'^[a-fA-F0-9]{32}$',
+    'sha1': r'^[a-fA-F0-9]{40}$',
+    'sha256': r'^[a-fA-F0-9]{64}$',
+    'sha512': r'^[a-fA-F0-9]{128}$',
     'mac': r'^([0-9a-fA-F][0-9a-fA-F]:){5}([0-9a-fA-F][0-9a-fA-F])$',
     'printable_ascii': r"^[\x20-\x7E]+$",
     'multi_byte': r"[^\x00-\x7F]",
@@ -423,6 +426,63 @@ def ismd5(value):
     :param value: string to validate MD5 encoding
     """
     return bool(re.match(patterns['md5'], value))
+
+
+@validate_str
+def issha1(value):
+    """
+    Return whether or not given value is SHA1 encoded.
+    If the value is SHA1 encoded, this function returns ``True``, otherwise ``False``.
+
+    Examples::
+
+        >>> issha1('1bc6b8a58b484bdb6aa5264dc554934e3e46c405')
+        True
+
+        >>> issha1('ZKYT059dbf1c356032a7b1a1d4c2f719e5a14c1')
+        False
+
+    :param value: string to validate SHA1 encoding
+    """
+    return bool(re.match(patterns['sha1'], value))
+
+
+@validate_str
+def issha256(value):
+    """
+    Return whether or not given value is SHA256 encoded.
+    If the value is SHA256 encoded, this function returns ``True``, otherwise ``False``.
+
+    Examples::
+
+        >>> issha256('fd04c4a99b6b1f118452da33dfe9523ec164f5fecde4502b69f1ed3f24a29ff6')
+        True
+
+        >>> issha256('KLO4545ID55545789Hg545235F4525576adca7676cd7dca7976676e6789dcaee')
+        False
+
+    :param value: string to validate SHA256 encoding
+    """
+    return bool(re.match(patterns['sha256'], value))
+
+
+@validate_str
+def issha512(value):
+    """
+    Return whether or not given value is SHA512 encoded.
+    If the value is SHA512 encoded, this function returns ``True``, otherwise ``False``.
+
+    Examples::
+
+        >>> issha512('0b696861da778f6bd0d899ad9a581f4b9b1eb8286eaba266d2f2e2767539055bf8eb59e8884839a268141aba1ef078ce67cf94d421bd1195a3c0e817f5f7b286')
+        True
+
+        >>> issha512('KLO4545ID55545789Hg545235F45255452Hgf76DJF56HgKJfg3456356356346534534653456sghey45656jhgjfgghdfhgdfhdfhdfhdfhghhq94375dj93458w34')
+        False
+
+    :param value: string to validate SHA512 encoding
+    """
+    return bool(re.match(patterns['sha512'], value))
 
 
 @validate_str
