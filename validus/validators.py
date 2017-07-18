@@ -5,6 +5,7 @@ import re
 import ipaddress
 import json
 import time
+from datetime import datetime
 
 patterns = {
     'ascii': r"^[\x00-\x7F]+$",
@@ -807,6 +808,31 @@ def istime(value, fmt):
     try:
         time_obj = time.strptime(value, fmt)
     except ValueError:
+        return False
+    return True
+
+
+@validate_str
+def isepoch(value):
+    """
+    Return whether or not given value is valid epoch time.
+    If the value is valid time, this function returns ``True``, otherwise ``False``.
+
+    Examples::
+
+        >>> isepoch(1500279525)
+        True
+
+        >>> istime('foo')
+        False
+
+    :param value: string to validate time
+    """
+    try:
+        dt_obj = datetime.fromtimestamp(float(value))
+    except ValueError:
+        return False
+    except TypeError:
         return False
     return True
 
