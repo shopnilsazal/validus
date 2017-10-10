@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 
+import sys
+if sys.version_info < (3):
+    sys.exit('Sorry, Python < 3 is not supported')
+
 __author__ = """Rafiqul Hasan"""
 __email__ = 'shopnilsazal@gmail.com'
 __version__ = '0.1.0'
