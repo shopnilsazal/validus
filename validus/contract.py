@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-
-
 '''
 Framework for enforcing assertions utilizing Python 3.6 features
 
@@ -13,7 +11,7 @@ from collections import ChainMap
 from functools import wraps
 from inspect import signature
 import validators
-
+import sys
 
 def checked(func):
     '''
@@ -54,6 +52,9 @@ _contracts = {'validators': type(validators), 'checked': type(checked)}
 
 
 class Contract:
+    """ Base class for enforcing the contract.  
+    This uses dunder magic similar to enable a compact representation
+    """
 
     @classmethod
     def __init_subclass__(cls):
@@ -97,6 +98,8 @@ class Contract:
 
 
 class Validated(Contract):
+    """ Class that validates the values and enforces the contract
+    """
     type = None
     assert_msg = None
 
@@ -113,186 +116,276 @@ class Validated(Contract):
 
 
 class ascii(Validated):
+    """ Class that validates and enforces ascii contract using isascii
+    """
     type = 'ascii'
 
 
 class printascii(Validated):
-
+    """ Class that validates and enforces printascii contract using isprintascii
+    """
     type = 'printascii'
 
 
 class base64(Validated):
+    """ Class that validates and enforces base64 contract using isbase64
+    """
     type = 'base64'
 
 
 class email(Validated):
+    """ Class that validates and enforces email contract using isemail
+    """
     type = 'email'
 
 
 class hexadecimal(Validated):
+    """ Class that validates and enforces hexadecimal contract using
+    ishexadecimal
+    """
     type = 'hexadecimal'
 
 
 class hexcolor(Validated):
+    """ Class that validates and enforces hexcolor contract using ishexcolor
+    """
     type = 'hexcolor'
 
 
 class rgbcolor(Validated):
+    """ Class that validates and enforces rgbcolor contract using isrgbcolor
+    """
     type = 'rgbcolor'
 
 
 # Do not want class names that match intrinsic functions so type != class name
 class integer(Validated):
+    """ Class that validates and enforces integer contract using isinteger
+    """
     type = 'int'
 
 
 # Do not want class names that match intrinsic functions so type != class name
 class real(Validated):
+    """ Class that validates and enforces real contract using isreal
+    """
     type = 'float'
 
 
 class slug(Validated):
+    """ Class that validates and enforces slug contract using isslug
+    """
     type = 'slug'
 
 
 class uuid(Validated):
+    """ Class that validates and enforces uuid contract using isuuid
+    """
     type = 'uuid'
 
 
 class uuid3(Validated):
+    """ Class that validates and enforces uuid3 contract using isuuid3
+    """
     type = 'uuid3'
 
 
 class uuid4(Validated):
+    """ Class that validates and enforces uuid4 contract using isuuid4
+    """
     type = 'uuid4'
 
 
 class uuid5(Validated):
+    """ Class that validates and enforces uuid5 contract using isuuid5
+    """
     type = 'uuid5'
 
 
 class fullwidth(Validated):
+    """ Class that validates and enforces fullwidth contract using isfullwidth
+    """
     type = 'fullwidth'
 
 
 class halfwidth(Validated):
+    """ Class that validates and enforces halfwidth contract using ishalfwidth
+    """
     type = 'halfwidth'
 
 
 class latitude(Validated):
+    """ Class that validates and enforces latitude contract using islatitude
+    """
     type = 'latitude'
 
 
 class longitude(Validated):
+    """ Class that validates and enforces longitude contract using islongitude
+    """
     type = 'longitude'
 
 
 class mac(Validated):
+    """ Class that validates and enforces mac contract using ismac
+    """
     type = 'mac'
 
 
 class md5(Validated):
+    """ Class that validates and enforces md5 contract using ismd5
+    """
     type = 'md5'
 
 
 class sha1(Validated):
+    """ Class that validates and enforces sha1 contract using issha1
+    """
     type = 'sha1'
 
 
 class sha256(Validated):
+    """ Class that validates and enforces sha256 contract using issha256
+    """
     type = 'sha256'
 
 
 class sha512(Validated):
+    """ Class that validates and enforces sha512 contract using issha512
+    """
     type = 'sha512'
 
 
 class mongoid(Validated):
+    """ Class that validates and enforces mongoid contract using ismongoid
+    """
     type = 'mongoid'
 
 
 class iso8601(Validated):
+    """ Class that validates and enforces iso8601 contract using isiso8601
+    """
     type = 'iso8601'
 
 
 class ipv4(Validated):
+    """ Class that validates and enforces ipv4 contract using isipv4
+    """
     type = 'ipv4'
 
 
 class ipv6(Validated):
+    """ Class that validates and enforces ipv6 contract using isipv6
+    """
     type = 'ipv6'
 
 
 class ip(Validated):
+    """ Class that validates and enforces ip contract using isip
+    """
     type = 'ip'
 
 
 class port(Validated):
+    """ Class that validates and enforces port contract using isport
+    """
     type = 'port'
 
 
 class dns(Validated):
+    """ Class that validates and enforces dns contract using isdns
+    """
     type = 'dns'
 
 
 class ssn(Validated):
+    """ Class that validates and enforces ssn contract using isssn
+    """
     type = 'ssn'
 
 
 class semver(Validated):
+    """ Class that validates and enforces semver contract using issemver
+    """
     type = 'semver'
 
 
 class bytelen(Validated):
+    """ Class that validates and enforces bytelen contract using isbytelen
+    """
     type = 'bytelen'
 
 
 class multibyte(Validated):
+    """ Class that validates and enforces multibyte contract using ismultibyte
+    """
     type = 'multibyte'
 
 
 class filepath(Validated):
+    """ Class that validates and enforces filepath contract using isfilepath
+    """
     type = 'filepath'
 
 
 class datauri(Validated):
+    """ Class that validates and enforces datauri contract using isdatauri
+    """
     type = 'datauri'
 
 
 class json(Validated):
+    """ Class that validates and enforces json contract using isjson
+    """
     type = 'json'
 
 
 class time(Validated):
+    """ Class that validates and enforces time contract using istime
+    """
     type = 'time'
 
 
 class url(Validated):
+    """ Class that validates and enforces url contract using isurl
+    """
     type = 'url'
 
 
 class crcard(Validated):
+    """ Class that validates and enforces crcard contract using iscrcard
+    """
     type = 'crcard'
 
 
 class isin(Validated):
+    """ Class that validates and enforces isin contract using isisin
+    """
     type = 'isin'
 
 
 class iban(Validated):
+    """ Class that validates and enforces iban contract using isiban
+    """
     type = 'iban'
 
 
 class imei(Validated):
+    """ Class that validates and enforces imei contract using isimei
+    """
     type = 'imei'
 
 
 class nonempty(Validated):
+    """ Class that validates and enforces nonempty contract using isnonempty
+    """
     type = 'nonempty'
     assert_msg = '"Value must not be empty"'
 
 
 class positive(Validated):
+    """ Class that validates and enforces positive contract using ispositive
+    """
     type = 'positive'
     assert_msg = "f'{value} must be a number and >0'"
 
@@ -301,6 +394,8 @@ class positive(Validated):
 # so Beazely's method of using super().check() doesn't work.  The solution is
 # to just call the checks by hand.
 class positive_integer(integer, positive):
+    """ Composite Class that validates and enforces both positive and integer
+    """
     @classmethod
     def check(cls, value):
         positive.check(value)
@@ -308,6 +403,8 @@ class positive_integer(integer, positive):
 
 
 class positive_real(positive, real):
+    """ Composite Class that validates and enforces both positive and real
+    """
     @classmethod
     def check(cls, value):
         positive.check(value)
@@ -315,6 +412,8 @@ class positive_real(positive, real):
 
 
 class nonempty_ascii(nonempty, ascii):
+    """ Composite Class that validates and enforces both nonempty and ascii
+    """
     @classmethod
     def check(cls, value):
         nonempty.check(value)
@@ -322,6 +421,8 @@ class nonempty_ascii(nonempty, ascii):
 
 
 class ValidusBaseMeta(type):
+    """ Metaclass for enabling elegant importing
+    """
     @classmethod
     def __prepare__(cls, *args):
         """
@@ -338,6 +439,8 @@ class ValidusBaseMeta(type):
 
 
 class ValidusBase(metaclass=ValidusBaseMeta):
+    """ Class to inherit from that gets the types automatically
+    """
     @classmethod
     def __init_subclass__(cls):
         """ Instatiate the contracts to enable
@@ -362,10 +465,11 @@ class ValidusBase(metaclass=ValidusBaseMeta):
 
         """
         # Contract on members
-        for name, valtype in cls.__annotations__.items():
-            contract = valtype()
-            contract.__set_name__(cls, name)
-            setattr(cls, name, contract)
+        if hasattr(cls,'__annotations__'):
+            for name, valtype in cls.__annotations__.items():
+                contract = valtype()
+                contract.__set_name__(cls, name)
+                setattr(cls, name, contract)
 
         # Contract on method arguments
         for name, val, in cls.__dict__.items():
@@ -404,7 +508,6 @@ def set_validated_contracts(modulename):
         set_validated_contracts(__name__)
 
     """
-    import sys
     for valtype in _contracts:
         valcontract = getattr(sys.modules[__name__], valtype)
         setattr(sys.modules[modulename], valtype, valcontract)
