@@ -1,0 +1,680 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Contract Usage (Python 3.6) &#8212; validus 0.1.0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Contributing" href="contributing.html" />
+    <link rel="prev" title="Usage" href="usage.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="contract-usage-python-3-6">
+<h1>Contract Usage (Python 3.6)<a class="headerlink" href="#contract-usage-python-3-6" title="Permalink to this headline">¶</a></h1>
+<p><strong>Introduction: Design by Contract</strong></p>
+<p>One programming paradigm is <a class="reference external" href="https://en.wikipedia.org/wiki/Design_by_contract">Design by Contract</a> .
+The basic idea is that one should be explicit in the interface statements, <em>the
+contract</em>, and that this should be enforced.  The enforcement of the contract
+requires <em>validation</em>.   Traditionally, Python did not even allow types to be
+described in the arguments; but as of Python 3.6, variable type annotations were
+implemented.   However, these annotations were <em>hints</em>; that is, they did not
+actually do anything, and thus by default cannot be used to enforce the
+contract (at least, without using <cite>mypy</cite>).</p>
+<p>Recently David Beazley gave a
+<a class="reference external" href="https://www.youtube.com/watch?v=js_0wjzuMfc">nice presentation</a>
+on how this design can be elegantly implemented using Python 3.6 features to
+enforce validation with the new type annotations.  This design pattern is
+implemented in validus (<cite>contract.py</cite>) and can be used for any validus type.</p>
+<p>This is useful as is,  but the real power is modifying this as a base class for
+your own needs, as you may/will want to customize actions for each validation.
+Making validation a core of your program is valuable, and this is an elegant
+technique for implementing it in python.</p>
+<div class="section" id="illustration-using-a-simple-function">
+<h2>Illustration using a simple function<a class="headerlink" href="#illustration-using-a-simple-function" title="Permalink to this headline">¶</a></h2>
+<p>We use Beazley’s example of calculating the greatest common denominator, a
+computation that only makes sense for positive integers.  Using validus in the
+basic usage method to make sure that arguments are valid could be
+(see <a class="reference download internal" href="_downloads/gcd0.py" download=""><code class="xref download docutils literal"><span class="pre">example</span></code></a>):</p>
+<div class="highlight-default"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">validus</span>
+
+<span class="k">def</span> <span class="nf">gcd</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute greatest common denominator</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="n">validus</span><span class="o">.</span><span class="n">isint</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">a</span><span class="p">))</span> <span class="ow">and</span> <span class="n">validus</span><span class="o">.</span><span class="n">ispositive</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">a</span><span class="p">)),</span> <span class="s1">&#39;gcd requires a positive number for a&#39;</span>
+    <span class="k">assert</span> <span class="n">validus</span><span class="o">.</span><span class="n">isint</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">b</span><span class="p">))</span> <span class="ow">and</span> <span class="n">validus</span><span class="o">.</span><span class="n">ispositive</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">b</span><span class="p">)),</span> <span class="s1">&#39;gcd requires a positive number for b&#39;</span>
+
+    <span class="k">while</span> <span class="n">b</span><span class="p">:</span>
+        <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">b</span><span class="p">,</span> <span class="n">a</span> <span class="o">%</span> <span class="n">b</span>
+    <span class="k">return</span> <span class="n">a</span>
+</pre></div>
+</td></tr></table></div>
+<p>Running this example gives:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span>(py36) bash-3.2$ python gcd0.py
+The greatest common denominator of 27 and 36 is:
+9
+The greatest common denominator of 2.7 and 3.6 is:
+AssertionError: gcd requires a positive number for a
+</pre></div>
+</div>
+<p>The coding to enforce the example is a bit verbose.  Using type annotations, a
+bit more compact method would be to use the decorator from <cite>contract.py</cite>
+(see <a class="reference download internal" href="_downloads/gcd1.py" download=""><code class="xref download docutils literal"><span class="pre">example</span></code></a>):</p>
+<div class="highlight-default"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">validus.contract</span> <span class="k">import</span> <span class="n">set_validated_contracts</span>
+<span class="n">set_validated_contracts</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="nd">@checked</span>
+<span class="k">def</span> <span class="nf">gcd</span><span class="p">(</span><span class="n">a</span><span class="p">:</span><span class="n">positive_integer</span><span class="p">,</span><span class="n">b</span><span class="p">:</span><span class="n">positive_integer</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute greatest common denominator</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">while</span> <span class="n">b</span><span class="p">:</span>
+        <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">b</span><span class="p">,</span> <span class="n">a</span> <span class="o">%</span> <span class="n">b</span>
+    <span class="k">return</span> <span class="n">a</span>
+
+</pre></div>
+</td></tr></table></div>
+<p>Running this example gives the same output as above.
+The command on line 2 is to define all of the types that validus provides
+validation methods for; i.e., for every <cite>isfoo</cite> validus method, there is a <cite>foo</cite>
+type that can be validated.  <cite>contract.py</cite> also defines a composite type,
+<cite>positive_integer</cite> using multiple inheritance.</p>
+</div>
+<div class="section" id="illustration-using-a-simple-class">
+<h2>Illustration using a simple class<a class="headerlink" href="#illustration-using-a-simple-class" title="Permalink to this headline">¶</a></h2>
+<p>A more elegant example is Beazley’s simple game class. We show several different
+methods of enforcing the contract.</p>
+<p>In this first design pattern, we use the traditional method of using validus to
+enforce the contract:
+(see <a class="reference download internal" href="_downloads/game1.py" download=""><code class="xref download docutils literal"><span class="pre">example</span></code></a>):</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">validus</span>
+<span class="k">class</span> <span class="nc">Player</span><span class="p">:</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="n">validus</span><span class="o">.</span><span class="n">isnonempty</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="ow">and</span> <span class="n">validus</span><span class="o">.</span><span class="n">isascii</span><span class="p">(</span><span class="n">name</span><span class="p">),</span> <span class="s1">&#39;Player requires a nonempty ascii for name&#39;</span>
+        <span class="k">assert</span> <span class="n">validus</span><span class="o">.</span><span class="n">isint</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)),</span> <span class="s1">&#39;Player requires a integer for x&#39;</span>
+        <span class="k">assert</span> <span class="n">validus</span><span class="o">.</span><span class="n">isint</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">y</span><span class="p">)),</span> <span class="s1">&#39;Player requires a integer for y&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">nonempty_ascii</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">=</span> <span class="n">integer</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y</span> <span class="o">=</span> <span class="n">integer</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">left</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">dx</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="n">validus</span><span class="o">.</span><span class="n">isint</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">dx</span><span class="p">))</span> <span class="ow">and</span> <span class="n">validus</span><span class="o">.</span><span class="n">ispositive</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">dx</span><span class="p">)),</span> <span class="s1">&#39;Moving left requires a positive number for dx&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">-=</span> <span class="n">dx</span>
+
+    <span class="k">def</span> <span class="nf">right</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">dx</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="n">validus</span><span class="o">.</span><span class="n">isint</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">dx</span><span class="p">))</span> <span class="ow">and</span> <span class="n">validus</span><span class="o">.</span><span class="n">ispositive</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">dx</span><span class="p">)),</span> <span class="s1">&#39;Moving right requires a positive number for dx&#39;</span>
+        <span class="n">dx</span> <span class="o">=</span> <span class="n">positive_integer</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">+=</span> <span class="n">dx</span>
+</pre></div>
+</td></tr></table></div>
+<p>Running this example, gives:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">Instantiating</span> <span class="k">class</span> <span class="nc">with</span> <span class="n">name</span><span class="o">=</span><span class="n">Guido</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">0</span>
+<span class="n">Move</span> <span class="n">to</span> <span class="n">the</span> <span class="n">left</span> <span class="k">with</span> <span class="n">dx</span><span class="o">=</span><span class="mi">1</span>
+<span class="n">Move</span> <span class="n">to</span> <span class="n">the</span> <span class="n">left</span> <span class="k">with</span> <span class="n">dx</span><span class="o">=-</span><span class="mi">1</span>
+<span class="ne">AssertionError</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span> <span class="n">must</span> <span class="n">be</span> <span class="n">a</span> <span class="n">number</span> <span class="ow">and</span> <span class="o">&gt;</span><span class="mi">0</span>
+</pre></div>
+</div>
+<p>In this second design pattern, we use a more compact description for both
+the members of the class and arguments passed to methods
+(see <a class="reference download internal" href="_downloads/game1.py" download=""><code class="xref download docutils literal"><span class="pre">example</span></code></a>):</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">validus.contract</span> <span class="kn">import</span> <span class="n">ValidusBase</span>
+<span class="k">class</span> <span class="nc">Player</span><span class="p">(</span><span class="n">ValidusBase</span><span class="p">):</span>
+    <span class="n">name</span><span class="p">:</span> <span class="n">nonempty_ascii</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">integer</span>
+    <span class="n">y</span><span class="p">:</span> <span class="n">integer</span>
+
+    <span class="k">def</span> <span class="nf">left</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">dx</span><span class="p">:</span> <span class="n">positive_integer</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">-=</span> <span class="n">dx</span>
+
+    <span class="k">def</span> <span class="nf">right</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">dx</span><span class="p">:</span> <span class="n">positive_integer</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">+=</span> <span class="n">dx</span>
+</pre></div>
+</td></tr></table></div>
+<p>The result of this example is the same as above.
+The lack of a constructor here is due to some <cite>getattr/setattr</cite> magic that is
+similar to the <cite>attrs</cite> python package.  Finally, <cite>contract.py</cite> enables the
+ability to specify the type globally within a module
+(see <a class="reference download internal" href="_downloads/game2.py" download=""><code class="xref download docutils literal"><span class="pre">example</span></code></a>):</p>
+<div class="highlight-python"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">validus.contract</span> <span class="kn">import</span> <span class="n">ValidusBase</span>
+<span class="kn">from</span> <span class="nn">validus.contract</span> <span class="kn">import</span> <span class="n">set_validated_contracts</span>
+<span class="n">set_validated_contracts</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="n">dx</span><span class="p">:</span> <span class="n">positive_integer</span>
+
+<span class="k">class</span> <span class="nc">Player</span><span class="p">(</span><span class="n">ValidusBase</span><span class="p">):</span>
+    <span class="n">name</span><span class="p">:</span> <span class="n">nonempty_ascii</span>
+    <span class="n">x</span><span class="p">:</span> <span class="n">integer</span>
+    <span class="n">y</span><span class="p">:</span> <span class="n">integer</span>
+
+    <span class="k">def</span> <span class="nf">left</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">dx</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x</span> <span class="o">-=</span> <span class="n">dx</span>
+</pre></div>
+</td></tr></table></div>
+<p>Again, the output of this example is the same as the previous examples.</p>
+</div>
+<div class="section" id="module-contract">
+<span id="contract-module-documentation"></span><h2>Contract module documentation<a class="headerlink" href="#module-contract" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="decorator">
+<h3>Decorator<a class="headerlink" href="#decorator" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="contract.checked">
+<code class="descclassname">contract.</code><code class="descname">checked</code><span class="sig-paren">(</span><em>func</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contract.html#checked"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contract.checked" title="Permalink to this definition">¶</a></dt>
+<dd><p>Enable a decorator that enforces the type annotations
+in the signature of a function.</p>
+<p>Example:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="nd">@checked</span>
+<span class="k">def</span> <span class="nf">gcd</span><span class="p">(</span><span class="n">a</span><span class="p">:</span><span class="n">positive_integer</span><span class="p">,</span><span class="n">b</span><span class="p">:</span><span class="n">positive_integer</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Compute greatest common denominator</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">while</span> <span class="n">b</span><span class="p">:</span>
+        <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">b</span><span class="p">,</span> <span class="n">a</span> <span class="o">%</span> <span class="n">b</span>
+    <span class="k">return</span> <span class="n">a</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="classes">
+<h3>Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="contract.Contract">
+<em class="property">class </em><code class="descclassname">contract.</code><code class="descname">Contract</code><a class="reference internal" href="_modules/contract.html#Contract"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contract.Contract" title="Permalink to this definition">¶</a></dt>
+<dd><p>Base class for enforcing the contract.  
+This uses dunder magic similar to enable a compact representation</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="contract.Validated">
+<em class="property">class </em><code class="descclassname">contract.</code><code class="descname">Validated</code><a class="reference internal" href="_modules/contract.html#Validated"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contract.Validated" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class that validates the values and enforces the contract</p>
+</dd></dl>
+
+</div>
+<div class="section" id="validus-contract-types">
+<h3>Validus contract types<a class="headerlink" href="#validus-contract-types" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="contract.ascii">
+<em class="property">class </em><code class="descclassname">contract.</code><code class="descname">ascii</code><a class="reference internal" href="_modules/contract.html#ascii"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contract.ascii" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class that validates and enforces ascii contract using isascii</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="contract.printascii">
+<em class="property">class </em><code class="descclassname">contract.</code><code class="descname">printascii</code><a class="reference internal" href="_modules/contract.html#printascii"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contract.printascii" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class that validates and enforces printascii contract using isprintascii</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="contract.base64">
+<em class="property">class </em><code class="descclassname">contract.</code><code class="descname">base64</code><a class="reference internal" href="_modules/contract.html#base64"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contract.base64" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class that validates and enforces base64 contract using isbase64</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="contract.email">
+<em class="property">class </em><code class="descclassname">contract.</code><code class="descname">email</code><a class="reference internal" href="_modules/contract.html#email"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contract.email" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class that validates and enforces email contract using isemail</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="contract.hexadecimal">
+<em class="property">class </em><code class="descclassname">contract.</code><code class="descname">hexadecimal</code><a class="reference internal" href="_modules/contract.html#hexadecimal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contract.hexadecimal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class that validates and enforces hexadecimal contract using
+ishexadecimal</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="contract.hexcolor">
+<em class="property">class </em><code class="descclassname">contract.</code><code class="descname">hexcolor</code><a class="reference internal" href="_modules/contract.html#hexcolor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contract.hexcolor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class that validates and enforces hexcolor contract using ishexcolor</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="contract.rgbcolor">
+<em class="property">class </em><code class="descclassname">contract.</code><code class="descname">rgbcolor</code><a class="reference internal" href="_modules/contract.html#rgbcolor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contract.rgbcolor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class that validates and enforces rgbcolor contract using isrgbcolor</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="contract.integer">
+<em class="property">class </em><code class="descclassname">contract.</code><code class="descname">integer</code><a class="reference internal" href="_modules/contract.html#integer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contract.integer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class that validates and enforces integer contract using isinteger</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="contract.real">
+<em class="property">class </em><code class="descclassname">contract.</code><code class="descname">real</code><a class="reference internal" href="_modules/contract.html#real"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contract.real" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class that validates and enforces real contract using isreal</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="contract.slug">
+<em class="property">class </em><code class="descclassname">contract.</code><code class="descname">slug</code><a class="reference internal" href="_modules/contract.html#slug"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contract.slug" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class that validates and enforces slug contract using isslug</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="contract.uuid">
+<em class="property">class </em><code class="descclassname">contract.</code><code class="descname">uuid</code><a class="reference internal" href="_modules/contract.html#uuid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contract.uuid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class that validates and enforces uuid contract using isuuid</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="contract.uuid3">
+<em class="property">class </em><code class="descclassname">contract.</code><code class="descname">uuid3</code><a class="reference internal" href="_modules/contract.html#uuid3"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contract.uuid3" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class that validates and enforces uuid3 contract using isuuid3</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="contract.uuid4">
+<em class="property">class </em><code class="descclassname">contract.</code><code class="descname">uuid4</code><a class="reference internal" href="_modules/contract.html#uuid4"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contract.uuid4" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class that validates and enforces uuid4 contract using isuuid4</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="contract.uuid5">
+<em class="property">class </em><code class="descclassname">contract.</code><code class="descname">uuid5</code><a class="reference internal" href="_modules/contract.html#uuid5"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contract.uuid5" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class that validates and enforces uuid5 contract using isuuid5</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="contract.fullwidth">
+<em class="property">class </em><code class="descclassname">contract.</code><code class="descname">fullwidth</code><a class="reference internal" href="_modules/contract.html#fullwidth"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contract.fullwidth" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class that validates and enforces fullwidth contract using isfullwidth</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="contract.halfwidth">
+<em class="property">class </em><code class="descclassname">contract.</code><code class="descname">halfwidth</code><a class="reference internal" href="_modules/contract.html#halfwidth"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contract.halfwidth" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class that validates and enforces halfwidth contract using ishalfwidth</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="contract.latitude">
+<em class="property">class </em><code class="descclassname">contract.</code><code class="descname">latitude</code><a class="reference internal" href="_modules/contract.html#latitude"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contract.latitude" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class that validates and enforces latitude contract using islatitude</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="contract.longitude">
+<em class="property">class </em><code class="descclassname">contract.</code><code class="descname">longitude</code><a class="reference internal" href="_modules/contract.html#longitude"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contract.longitude" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class that validates and enforces longitude contract using islongitude</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="contract.mac">
+<em class="property">class </em><code class="descclassname">contract.</code><code class="descname">mac</code><a class="reference internal" href="_modules/contract.html#mac"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contract.mac" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class that validates and enforces mac contract using ismac</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="contract.md5">
+<em class="property">class </em><code class="descclassname">contract.</code><code class="descname">md5</code><a class="reference internal" href="_modules/contract.html#md5"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contract.md5" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class that validates and enforces md5 contract using ismd5</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="contract.sha1">
+<em class="property">class </em><code class="descclassname">contract.</code><code class="descname">sha1</code><a class="reference internal" href="_modules/contract.html#sha1"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contract.sha1" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class that validates and enforces sha1 contract using issha1</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="contract.sha256">
+<em class="property">class </em><code class="descclassname">contract.</code><code class="descname">sha256</code><a class="reference internal" href="_modules/contract.html#sha256"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contract.sha256" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class that validates and enforces sha256 contract using issha256</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="contract.sha512">
+<em class="property">class </em><code class="descclassname">contract.</code><code class="descname">sha512</code><a class="reference internal" href="_modules/contract.html#sha512"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contract.sha512" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class that validates and enforces sha512 contract using issha512</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="contract.mongoid">
+<em class="property">class </em><code class="descclassname">contract.</code><code class="descname">mongoid</code><a class="reference internal" href="_modules/contract.html#mongoid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contract.mongoid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class that validates and enforces mongoid contract using ismongoid</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="contract.iso8601">
+<em class="property">class </em><code class="descclassname">contract.</code><code class="descname">iso8601</code><a class="reference internal" href="_modules/contract.html#iso8601"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contract.iso8601" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class that validates and enforces iso8601 contract using isiso8601</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="contract.ipv4">
+<em class="property">class </em><code class="descclassname">contract.</code><code class="descname">ipv4</code><a class="reference internal" href="_modules/contract.html#ipv4"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contract.ipv4" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class that validates and enforces ipv4 contract using isipv4</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="contract.ipv6">
+<em class="property">class </em><code class="descclassname">contract.</code><code class="descname">ipv6</code><a class="reference internal" href="_modules/contract.html#ipv6"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contract.ipv6" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class that validates and enforces ipv6 contract using isipv6</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="contract.ip">
+<em class="property">class </em><code class="descclassname">contract.</code><code class="descname">ip</code><a class="reference internal" href="_modules/contract.html#ip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contract.ip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class that validates and enforces ip contract using isip</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="contract.port">
+<em class="property">class </em><code class="descclassname">contract.</code><code class="descname">port</code><a class="reference internal" href="_modules/contract.html#port"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contract.port" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class that validates and enforces port contract using isport</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="contract.dns">
+<em class="property">class </em><code class="descclassname">contract.</code><code class="descname">dns</code><a class="reference internal" href="_modules/contract.html#dns"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contract.dns" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class that validates and enforces dns contract using isdns</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="contract.ssn">
+<em class="property">class </em><code class="descclassname">contract.</code><code class="descname">ssn</code><a class="reference internal" href="_modules/contract.html#ssn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contract.ssn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class that validates and enforces ssn contract using isssn</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="contract.semver">
+<em class="property">class </em><code class="descclassname">contract.</code><code class="descname">semver</code><a class="reference internal" href="_modules/contract.html#semver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contract.semver" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class that validates and enforces semver contract using issemver</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="contract.bytelen">
+<em class="property">class </em><code class="descclassname">contract.</code><code class="descname">bytelen</code><a class="reference internal" href="_modules/contract.html#bytelen"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contract.bytelen" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class that validates and enforces bytelen contract using isbytelen</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="contract.multibyte">
+<em class="property">class </em><code class="descclassname">contract.</code><code class="descname">multibyte</code><a class="reference internal" href="_modules/contract.html#multibyte"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contract.multibyte" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class that validates and enforces multibyte contract using ismultibyte</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="contract.filepath">
+<em class="property">class </em><code class="descclassname">contract.</code><code class="descname">filepath</code><a class="reference internal" href="_modules/contract.html#filepath"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contract.filepath" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class that validates and enforces filepath contract using isfilepath</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="contract.datauri">
+<em class="property">class </em><code class="descclassname">contract.</code><code class="descname">datauri</code><a class="reference internal" href="_modules/contract.html#datauri"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contract.datauri" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class that validates and enforces datauri contract using isdatauri</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="contract.json">
+<em class="property">class </em><code class="descclassname">contract.</code><code class="descname">json</code><a class="reference internal" href="_modules/contract.html#json"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contract.json" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class that validates and enforces json contract using isjson</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="contract.time">
+<em class="property">class </em><code class="descclassname">contract.</code><code class="descname">time</code><a class="reference internal" href="_modules/contract.html#time"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contract.time" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class that validates and enforces time contract using istime</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="contract.url">
+<em class="property">class </em><code class="descclassname">contract.</code><code class="descname">url</code><a class="reference internal" href="_modules/contract.html#url"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contract.url" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class that validates and enforces url contract using isurl</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="contract.crcard">
+<em class="property">class </em><code class="descclassname">contract.</code><code class="descname">crcard</code><a class="reference internal" href="_modules/contract.html#crcard"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contract.crcard" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class that validates and enforces crcard contract using iscrcard</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="contract.isin">
+<em class="property">class </em><code class="descclassname">contract.</code><code class="descname">isin</code><a class="reference internal" href="_modules/contract.html#isin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contract.isin" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class that validates and enforces isin contract using isisin</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="contract.iban">
+<em class="property">class </em><code class="descclassname">contract.</code><code class="descname">iban</code><a class="reference internal" href="_modules/contract.html#iban"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contract.iban" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class that validates and enforces iban contract using isiban</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="contract.imei">
+<em class="property">class </em><code class="descclassname">contract.</code><code class="descname">imei</code><a class="reference internal" href="_modules/contract.html#imei"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contract.imei" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class that validates and enforces imei contract using isimei</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="contract.nonempty">
+<em class="property">class </em><code class="descclassname">contract.</code><code class="descname">nonempty</code><a class="reference internal" href="_modules/contract.html#nonempty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contract.nonempty" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class that validates and enforces nonempty contract using isnonempty</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="contract.positive">
+<em class="property">class </em><code class="descclassname">contract.</code><code class="descname">positive</code><a class="reference internal" href="_modules/contract.html#positive"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contract.positive" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class that validates and enforces positive contract using ispositive</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="contract.positive_integer">
+<em class="property">class </em><code class="descclassname">contract.</code><code class="descname">positive_integer</code><a class="reference internal" href="_modules/contract.html#positive_integer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contract.positive_integer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Composite Class that validates and enforces both positive and integer</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="contract.positive_real">
+<em class="property">class </em><code class="descclassname">contract.</code><code class="descname">positive_real</code><a class="reference internal" href="_modules/contract.html#positive_real"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contract.positive_real" title="Permalink to this definition">¶</a></dt>
+<dd><p>Composite Class that validates and enforces both positive and real</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="contract.nonempty_ascii">
+<em class="property">class </em><code class="descclassname">contract.</code><code class="descname">nonempty_ascii</code><a class="reference internal" href="_modules/contract.html#nonempty_ascii"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contract.nonempty_ascii" title="Permalink to this definition">¶</a></dt>
+<dd><p>Composite Class that validates and enforces both nonempty and ascii</p>
+</dd></dl>
+
+</div>
+<div class="section" id="import-classes-and-methods">
+<h3>Import classes and methods<a class="headerlink" href="#import-classes-and-methods" title="Permalink to this headline">¶</a></h3>
+<dl class="class">
+<dt id="contract.ValidusBaseMeta">
+<em class="property">class </em><code class="descclassname">contract.</code><code class="descname">ValidusBaseMeta</code><a class="reference internal" href="_modules/contract.html#ValidusBaseMeta"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contract.ValidusBaseMeta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Metaclass for enabling elegant importing</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="contract.ValidusBase">
+<em class="property">class </em><code class="descclassname">contract.</code><code class="descname">ValidusBase</code><span class="sig-paren">(</span><em>*args</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contract.html#ValidusBase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contract.ValidusBase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class to inherit from that gets the types automatically</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="contract.set_validated_contracts">
+<code class="descclassname">contract.</code><code class="descname">set_validated_contracts</code><span class="sig-paren">(</span><em>modulename</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/contract.html#set_validated_contracts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#contract.set_validated_contracts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Try to avoid <cite>from contract import *</cite>
+or <cite>from contract import ascii, printascii, int, float, email, …</cite></p>
+<p>Usage:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">contract</span> <span class="k">import</span> <span class="n">set_validated_contracts</span>
+<span class="n">set_validated_contracts</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">validus</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="readme.html">Validus</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Contract Usage (Python 3.6)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#illustration-using-a-simple-function">Illustration using a simple function</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#illustration-using-a-simple-class">Illustration using a simple class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-contract">Contract module documentation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="authors.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">History</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="usage.html" title="previous chapter">Usage</a></li>
+      <li>Next: <a href="contributing.html" title="next chapter">Contributing</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Rafiqul Hasan.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/contract_usage.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
