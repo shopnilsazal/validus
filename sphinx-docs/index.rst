@@ -9,6 +9,7 @@ Contents:
    readme
    installation
    usage
+   contract_usage
    contributing
    authors
    history
