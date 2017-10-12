@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from utils import validate_str
+from .utils import validate_str
 import re
 import ipaddress
 import json

@@ -16,7 +16,7 @@ else:
 from .phones import isphone
 from .isbn import isisbn, isisbn10, isisbn13
 from .validators import isascii, isprintascii, isbase64, isemail, ishexadecimal
-from .validators import isint, isfloat, ispositive, isslug
+from .validators import isint, isfloat, ispositive, isslug, isnonempty
 from .validators import isuuid, isuuid3, isuuid4, isuuid5
 from .validators import isfullwidth, ishalfwidth, islatitude, islongitude
 from .validators import ismac, ismd5, ismongoid, isiso8601, isbytelen

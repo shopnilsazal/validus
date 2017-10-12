@@ -2,15 +2,20 @@
 '''
 Framework for enforcing assertions utilizing Python 3.6 features
 
-Inspired by/stolen from the contract.py framework written by David Beazely at
-his PyCon Israel talk:
-  https://www.youtube.com/watch?v=js_0wjzuMfc&t=1999s
+Notes::
+
+    - Type is real for isfloat
+    - Type is integer for isint
+    - bytelen is not supported (Needs to be tuple)
+    - time is not supported (Needs to be tuple)
+    - The method of invoking the validus.is* methods requires evals and some tests
+       have problems -- See tests_contracts.py for these issues.
 '''
 
 from collections import ChainMap
 from functools import wraps
 from inspect import signature
-import validators
+import validus
 import sys
 
 def checked(func):
@@ -48,7 +53,7 @@ def checked(func):
 
 
 # Registry to make namespacing magic
-_contracts = {'validators': type(validators), 'checked': type(checked)}
+_contracts = {'validus': type(validus), 'checked': type(checked)}
 
 
 class Contract:
@@ -65,9 +70,6 @@ class Contract:
 #   Own the "dot" (Descriptor protocol)
     def __set__(self, instance, value):
         ''' Check the value before setting it to the name
-        This allows things like::
-
-            email = email()
         '''
         self.check(value)
         instance.__dict__[self.name] = value
@@ -111,8 +113,9 @@ class Validated(Contract):
             assert_msg = f'{value} is not a valid {ctype}'
         else:
             assert_msg = eval(cls.assert_msg)  # eval for fstrings in classes
-        assert istype in dir(validators), f'{ctype} is not a validus validator'
-        assert eval('validators.'+istype+'("'+str(value)+'")'), assert_msg
+        assert istype in dir(validus), f'{ctype} is not a validus validator'
+        cmd="validus."+istype+"('"+str(value)+"')"
+        assert eval(cmd), assert_msg
 
 
 class ascii(Validated):
@@ -308,12 +311,6 @@ class semver(Validated):
     """ Class that validates and enforces semver contract using issemver
     """
     type = 'semver'
-
-
-class bytelen(Validated):
-    """ Class that validates and enforces bytelen contract using isbytelen
-    """
-    type = 'bytelen'
 
 
 class multibyte(Validated):
