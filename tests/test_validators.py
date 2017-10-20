@@ -109,6 +109,15 @@ class TestValidators(unittest.TestCase):
         self.assertFalse(validus.isint('123.123'))
         self.assertFalse(validus.isint('100e10'))
 
+    def test_ispositive(self):
+        self.assertTrue(validus.ispositive('123.123'))
+        self.assertFalse(validus.ispositive('-.123'))
+
+    def test_isnonempty(self):
+        self.assertTrue(validus.isnonempty('123.123'))
+        self.assertTrue(validus.isnonempty('foobar'))
+        self.assertFalse(validus.isnonempty(''))
+
     def test_isfloat(self):
         self.assertTrue(validus.isfloat('123.123'))
         self.assertTrue(validus.isfloat('-123.123'))

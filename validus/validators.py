@@ -48,6 +48,24 @@ patterns = {
 
 
 @validate_str
+def isnonempty(value):
+    """
+    Return whether the value is not empty
+
+    Examples::
+
+        >>> isnonempty('a')
+        True
+
+        >>> isnonempty('')
+        False
+
+    :param value: string to validate whether value is not empty
+    """
+    return True if len(value)>0 else False
+
+
+@validate_str
 def isascii(value):
     """
     Return whether or not given value contains ASCII chars only. Empty string is valid.
@@ -203,6 +221,13 @@ def isint(value):
 def isfloat(value):
     """
     Return whether or not given value is a float.
+    This does not give the same answer as::
+
+        isinstance(num_value,float)
+
+    Because isfloat('1') returns true.  More strict typing requirements may want
+    to use is_instance.
+
     If the value is a float, this function returns ``True``, otherwise ``False``.
 
     Examples::
@@ -216,6 +241,31 @@ def isfloat(value):
     :param value: string to validate float
     """
     return value != '' and bool(re.match(patterns['float'], value))
+
+@validate_str
+def ispositive(value):
+    """
+    Return whether a number is positive or not
+
+    Examples::
+
+        >>> ispositive('1')
+        True
+
+        >>> ispositive('1.')
+        True
+
+        >>> ispositive('-1.')
+        False
+
+        >>> ispositive('a')
+        False
+
+    :param value: string to validate number
+    """
+    if not isfloat(value):
+        return False
+    return eval(value+'>0')
 
 
 @validate_str
