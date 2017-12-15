@@ -6,12 +6,8 @@ if sys.version_info[0] < 3:
 
 __author__ = """Rafiqul Hasan"""
 __email__ = 'shopnilsazal@gmail.com'
-__version__ = '0.1.0'
+__version__ = '0.2.0'
 
-if sys.version_info[1] < 6:
-    __all__=['isbn','phones','utils','validators']
-else:
-    __all__=['isbn','phones','utils','validators','contract']
 
 from .phones import isphone
 from .isbn import isisbn, isisbn10, isisbn13
@@ -23,4 +19,4 @@ from .validators import ismac, ismd5, ismongoid, isiso8601, isbytelen
 from .validators import isipv4, isipv6, isip, isport, isdns, isssn, issemver
 from .validators import ismultibyte, isfilepath, isdatauri, isjson, istime, isurl
 from .validators import iscrcard, isisin, isiban, ishexcolor, isrgbcolor, isimei
-from .validators import issha1, issha256, issha512
+from .validators import issha1, issha256, issha512, ismimetype, isisrc

@@ -1,23 +1,21 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>validus.isbn &#8212; validus 0.1.0 documentation</title>
-    
+    <title>validus.isbn &#8212; validus 0.2.0 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.1.0',
+        VERSION:     '0.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../../_static/jquery.js"></script>
@@ -25,8 +23,6 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="top" title="validus 0.1.0 documentation" href="../../index.html" />
-    <link rel="up" title="Module code" href="../index.html" />
    
   <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
   
@@ -34,7 +30,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <body role="document">
+  <body>
   
 
     <div class="document">
@@ -45,12 +41,6 @@
   <h1>Source code for validus.isbn</h1><div class="highlight"><pre>
 <span></span><span class="kn">from</span> <span class="nn">.utils</span> <span class="k">import</span> <span class="n">validate_str</span>
 <span class="kn">import</span> <span class="nn">re</span>
-
-
-<span class="n">isbn_patterns</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;isbn10&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;^(?:[0-9]</span><span class="si">{9}</span><span class="s2">X|[0-9]</span><span class="si">{10}</span><span class="s2">)$&quot;</span><span class="p">,</span>
-    <span class="s1">&#39;isbn13&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;^(?:[0-9]</span><span class="si">{13}</span><span class="s2">)$&quot;</span><span class="p">,</span>
-<span class="p">}</span>
 
 
 <span class="nd">@validate_str</span>
@@ -93,10 +83,12 @@
 <span class="sd">    :param isbn: ISBN string to validate</span>
 <span class="sd">    :param version: Optional ISBN version (10 or 13)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">isbn10_pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;^(?:[0-9]</span><span class="si">{9}</span><span class="s2">X|[0-9]</span><span class="si">{10}</span><span class="s2">)$&quot;</span><span class="p">)</span>
+    <span class="n">isbn13_pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;^(?:[0-9]</span><span class="si">{13}</span><span class="s2">)$&quot;</span><span class="p">)</span>
     <span class="n">sanitized</span> <span class="o">=</span> <span class="n">sanitize_isbn</span><span class="p">(</span><span class="n">isbn</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">version</span> <span class="o">==</span> <span class="mi">10</span><span class="p">:</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">isbn_patterns</span><span class="p">[</span><span class="s1">&#39;isbn10&#39;</span><span class="p">],</span> <span class="n">sanitized</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">isbn10_pattern</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">sanitized</span><span class="p">):</span>
             <span class="k">return</span> <span class="kc">False</span>
         <span class="n">checksum</span> <span class="o">=</span> <span class="n">get_isbn_10_checksum</span><span class="p">(</span><span class="n">isbn</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">checksum</span> <span class="o">%</span> <span class="mi">11</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -104,7 +96,7 @@
         <span class="k">return</span> <span class="kc">False</span>
 
     <span class="k">elif</span> <span class="n">version</span> <span class="o">==</span> <span class="mi">13</span><span class="p">:</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">isbn_patterns</span><span class="p">[</span><span class="s1">&#39;isbn13&#39;</span><span class="p">],</span> <span class="n">sanitized</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">isbn13_pattern</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">sanitized</span><span class="p">):</span>
             <span class="k">return</span> <span class="kc">False</span>
         <span class="n">checksum</span> <span class="o">=</span> <span class="n">get_isbn_13_checksum</span><span class="p">(</span><span class="n">isbn</span><span class="p">)</span>
         <span class="k">if</span> <span class="nb">int</span><span class="p">(</span><span class="n">sanitized</span><span class="p">[</span><span class="mi">12</span><span class="p">])</span> <span class="o">-</span> <span class="p">((</span><span class="mi">10</span> <span class="o">-</span> <span class="p">(</span><span class="n">checksum</span> <span class="o">%</span> <span class="mi">10</span><span class="p">))</span> <span class="o">%</span> <span class="mi">10</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -167,9 +159,10 @@
 
 <h3>Navigation</h3>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../readme.html">validus</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../readme.html">Validus</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage.html#available-functions">Available Functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../authors.html">Credits</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../history.html">History</a></li>
@@ -202,7 +195,7 @@
       &copy;2017, Rafiqul Hasan.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.8</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.4</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
       
     </div>

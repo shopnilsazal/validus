@@ -6,64 +6,6 @@ import ipaddress
 import json
 import time
 
-patterns = {
-    'ascii': r"^[\x00-\x7F]+$",
-    'base64': r"^(?:[A-Za-z0-9+\/]{4})*(?:[A-Za-z0-9+\/]{2}==|[A-Za-z0-9+\/]{3}=|[A-Za-z0-9+\/]{4})$",
-    'email': r"""^(((([a-zA-Z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-zA-Z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-zA-Z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-zA-Z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-zA-Z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-zA-Z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-zA-Z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-zA-Z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-zA-Z]|\d|-|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-zA-Z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?$""",
-    'credit_card': r"^(?:4[0-9]{12}(?:[0-9]{3})?|5[1-5][0-9]{14}|6(?:011|5[0-9][0-9])[0-9]{12}|3[47][0-9]{13}|3(?:0[0-5]|[68][0-9])[0-9]{11}|(?:2131|1800|35\d{3})\d{11})$",
-    'float': r"^(?:[-+]?(?:[0-9]+))?(?:\.[0-9]*)?(?:[eE][\+\-]?(?:[0-9]+))?$",
-    'int': r"^(?:[-+]?(?:0|[1-9][0-9]*))$",
-    'iso8601': r'^([\+-]?\d{4}(?!\d{2}\b))((-?)((0[1-9]|1[0-2])(\3([12]\d|0[1-9]|3[01]))?|W([0-4]\d|5[0-2])(-?[1-7])?|(00[1-9]|0[1-9]\d|[12]\d{2}|3([0-5]\d|6[1-6])))([T\s]((([01]\d|2[0-3])((:?)[0-5]\d)?|24:?00)([\.,]\d+(?!:))?)?(\17[0-5]\d([\.,]\d+)?)?([zZ]|([\+-])([01]\d|2[0-3]):?([0-5]\d)?)?)?)?$',
-    'iban': r'^[A-Z]{2}[0-9]{2}[A-Z0-9]{11,30}$',
-    'isin': r'^[A-Z]{2}[0-9A-Z]{9}[0-9]$',
-    'uuid3': r"^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-3[0-9a-fA-F]{3}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
-    'uuid4': r"^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$",
-    'uuid5': r"^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-5[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$",
-    'uuid': r"^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$",
-    'md5': r'^[a-fA-F0-9]{32}$',
-    'sha1': r'^[a-fA-F0-9]{40}$',
-    'sha256': r'^[a-fA-F0-9]{64}$',
-    'sha512': r'^[a-fA-F0-9]{128}$',
-    'mac': r'^([0-9a-fA-F][0-9a-fA-F]:){5}([0-9a-fA-F][0-9a-fA-F])$',
-    'printable_ascii': r"^[\x20-\x7E]+$",
-    'multi_byte': r"[^\x00-\x7F]",
-    'full_width': r"[^\u0020-\u007E\uFF61-\uFF9F\uFFA0-\uFFDC\uFFE8-\uFFEE0-9a-zA-Z]",
-    'half_width': r"[\u0020-\u007E\uFF61-\uFF9F\uFFA0-\uFFDC\uFFE8-\uFFEE0-9a-zA-Z]",
-    'hexadecimal': r"^[0-9a-fA-F]+$",
-    'hex_color': r"^#?([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$",
-    'rgb_color': r"^rgb\(\s*(0|[1-9]\d?|1\d\d?|2[0-4]\d|25[0-5])\s*,\s*(0|[1-9]\d?|1\d\d?|2[0-4]\d|25[0-5])\s*,\s*(0|[1-9]\d?|1\d\d?|2[0-4]\d|25[0-5])\s*\)$",
-    'data_uri': r"\s*data:([a-zA-Z]+\/[a-zA-Z0-9\-\+]+(;[a-zA-Z\-]+=[a-zA-Z0-9\-]+)?)?(;base64)?,[a-zA-Z0-9!\$&',\(\)\*\+,;=\-\._~:@\/\?%\s]*\s*$",
-    'latitude': r'^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?)$',
-    'longitude': r'^[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$',
-    'dns': r'^([a-zA-Z0-9_]{1}[a-zA-Z0-9_-]{0,62}){1}(\.[a-zA-Z0-9_]{1}[a-zA-Z0-9_-]{0,62})*[\._]?$',
-    'url': r'^((ftp|tcp|irc|udp|wss?|https?):\/\/)?(\S+(:\S*)?@)?((([1-9]\d?|1\d\d|2[01]\d|22[0-3])(\.(1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.([0-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(\[(([0-9a-fA-F]{1,4}:){7,7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]{1,}|::(ffff(:0{1,4}){0,1}:){0,1}((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9])\.){3,3}(25[0-5]|(2[0-4]|1{0,1}[0-9]){0,1}[0-9]))\])|(([a-zA-Z0-9]([a-zA-Z0-9-_]+)?[a-zA-Z0-9]([-\.][a-zA-Z0-9]+)*)|(((www\.)|([a-zA-Z0-9]([-\.][-\._a-zA-Z0-9]+)*))?))?(([a-zA-Z\u00a1-\uffff0-9]+-?-?)*[a-zA-Z\u00a1-\uffff0-9]+)(?:\.([a-zA-Z\u00a1-\uffff]{1,}))?))\.?(:(\d{1,5}))?((\/|\?|#)[^\s]*)?$',
-    'ssn': r'^\d{3}[- ]?\d{2}[- ]?\d{4}$',
-    'slug': r'^[-a-zA-Z0-9_]+$',
-    'semver': r'^v?(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(-(0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(\.(0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*)?(\+[0-9a-zA-Z-]+(\.[0-9a-zA-Z-]+)*)?$',
-    'win_path': r'^[a-zA-Z]:\\(?:[^\\/:*?"<>|\r\n]+\\)*[^\\/:*?"<>|\r\n]*$',
-    'unix_path': r'^(/[^/\x00]*)+/?$',
-    'imei': r'^[0-9]{15}$'
-
-}
-
-
-@validate_str
-def isnonempty(value):
-    """
-    Return whether the value is not empty
-
-    Examples::
-
-        >>> isnonempty('a')
-        True
-
-        >>> isnonempty('')
-        False
-
-    :param value: string to validate whether value is not empty
-    """
-    return True if len(value)>0 else False
-
 
 @validate_str
 def isascii(value):
@@ -81,7 +23,8 @@ def isascii(value):
 
     :param value: string to validate ASCII chars
     """
-    return value == '' or bool(re.match(patterns['ascii'], value))
+    ascii_pattern = re.compile(r"^[\x00-\x7F]+$")
+    return value == '' or bool(ascii_pattern.match(value))
 
 
 @validate_str
@@ -100,7 +43,26 @@ def isprintascii(value):
 
     :param value: string to validate printable ASCII chars
     """
-    return value == '' or bool(re.match(patterns['printable_ascii'], value))
+    print_ascii = re.compile(r"^[\x20-\x7E]+$")
+    return value == '' or bool(print_ascii.match(value))
+
+
+@validate_str
+def isnonempty(value):
+    """
+    Return whether the value is not empty
+
+    Examples::
+
+        >>> isnonempty('a')
+        True
+
+        >>> isnonempty('')
+        False
+
+    :param value: string to validate whether value is not empty
+    """
+    return True if len(value) > 0 else False
 
 
 @validate_str
@@ -119,7 +81,8 @@ def isbase64(value):
 
     :param value: string to validate base64 encoding
     """
-    return bool(re.match(patterns['base64'], value))
+    base64 = re.compile(r"^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{4})$")
+    return bool(base64.match(value))
 
 
 @validate_str
@@ -138,7 +101,8 @@ def isemail(value):
 
     :param value: string to validate email
     """
-    return bool(re.match(patterns['email'], value))
+    email = re.compile(r"""^(((([a-zA-Z]|\d|[!#$%&'*+\-/=?^_`{|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-zA-Z]|\d|[!#$%&'*+\-/=?^_`{|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-zA-Z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-zA-Z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-zA-Z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-zA-Z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-zA-Z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-zA-Z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-zA-Z]|\d|-|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-zA-Z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?$""")
+    return bool(email.match(value))
 
 
 @validate_str
@@ -157,7 +121,8 @@ def ishexadecimal(value):
 
     :param value: string to validate hexadecimal number
     """
-    return bool(re.match(patterns['hexadecimal'], value))
+    hexa_decimal = re.compile(r"^[0-9a-fA-F]+$")
+    return bool(hexa_decimal.match(value))
 
 
 @validate_str
@@ -176,7 +141,8 @@ def ishexcolor(value):
 
     :param value: string to validate hexadecimal color
     """
-    return bool(re.match(patterns['hex_color'], value))
+    pattern = re.compile(r"^#?([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$")
+    return bool(pattern.match(value))
 
 
 @validate_str
@@ -195,7 +161,8 @@ def isrgbcolor(value):
 
     :param value: string to validate rgb color
     """
-    return bool(re.match(patterns['rgb_color'], value))
+    rgb = re.compile(r"^rgb\(\s*(0|[1-9]\d?|1\d\d?|2[0-4]\d|25[0-5])\s*,\s*(0|[1-9]\d?|1\d\d?|2[0-4]\d|25[0-5])\s*,\s*(0|[1-9]\d?|1\d\d?|2[0-4]\d|25[0-5])\s*\)$")
+    return bool(rgb.match(value))
 
 
 @validate_str
@@ -214,7 +181,8 @@ def isint(value):
 
     :param value: string to validate integer
     """
-    return value != '' and bool(re.match(patterns['int'], value))
+    integer = re.compile(r"^(?:[-+]?(?:0|[1-9][0-9]*))$")
+    return value != '' and bool(integer.match(value))
 
 
 @validate_str
@@ -240,7 +208,9 @@ def isfloat(value):
 
     :param value: string to validate float
     """
-    return value != '' and bool(re.match(patterns['float'], value))
+    floating = re.compile(r"^(?:[-+]?(?:[0-9]+))?(?:\.[0-9]*)?(?:[eE][+\-]?(?:[0-9]+))?$")
+    return value != '' and bool(floating.match(value))
+
 
 @validate_str
 def ispositive(value):
@@ -265,7 +235,7 @@ def ispositive(value):
     """
     if not isfloat(value):
         return False
-    return eval(value+'>0')
+    return float(value) > 0
 
 
 @validate_str
@@ -285,7 +255,8 @@ def isslug(value):
 
     :param value: value to validate
     """
-    return bool(re.match(patterns['slug'], value))
+    slug = re.compile(r'^[-a-zA-Z0-9_]+$')
+    return bool(slug.match(value))
 
 
 @validate_str
@@ -304,7 +275,8 @@ def isuuid(value):
 
     :param value: string to validate UUID (version 3, 4 or 5)
     """
-    return bool(re.match(patterns['uuid'], value))
+    uuid = re.compile(r"^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$")
+    return bool(uuid.match(value))
 
 
 @validate_str
@@ -323,7 +295,8 @@ def isuuid3(value):
 
     :param value: string to validate UUID version 3
     """
-    return bool(re.match(patterns['uuid3'], value))
+    uuid3 = re.compile(r"^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-3[0-9a-fA-F]{3}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$")
+    return bool(uuid3.match(value))
 
 
 @validate_str
@@ -342,7 +315,8 @@ def isuuid4(value):
 
     :param value: string to validate UUID version 4
     """
-    return bool(re.match(patterns['uuid4'], value))
+    uuid4 = re.compile(r"^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-4[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$")
+    return bool(uuid4.match(value))
 
 
 @validate_str
@@ -361,7 +335,8 @@ def isuuid5(value):
 
     :param value: string to validate UUID version 5
     """
-    return bool(re.match(patterns['uuid5'], value))
+    uuid5 = re.compile(r"^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-5[0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$")
+    return bool(uuid5.match(value))
 
 
 @validate_str
@@ -380,7 +355,8 @@ def isfullwidth(value):
 
     :param value: string to validate full-width chars
     """
-    return bool(re.match(patterns['full_width'], value))
+    full = re.compile(r"[^\u0020-\u007E\uFF61-\uFF9F\uFFA0-\uFFDC\uFFE8-\uFFEE0-9a-zA-Z]")
+    return bool(full.match(value))
 
 
 @validate_str
@@ -399,7 +375,8 @@ def ishalfwidth(value):
 
     :param value: string to validate half-width chars
     """
-    return bool(re.match(patterns['half_width'], value))
+    half = re.compile(r"[\u0020-\u007E\uFF61-\uFF9F\uFFA0-\uFFDC\uFFE8-\uFFEE0-9a-zA-Z]")
+    return bool(half.match(value))
 
 
 @validate_str
@@ -418,7 +395,8 @@ def islatitude(value):
 
     :param value: string to validate latitude
     """
-    return bool(re.match(patterns['latitude'], value))
+    lat = re.compile(r'^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?)$')
+    return bool(lat.match(value))
 
 
 @validate_str
@@ -437,7 +415,8 @@ def islongitude(value):
 
     :param value: string to validate longitude
     """
-    return bool(re.match(patterns['longitude'], value))
+    long = re.compile(r'^[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$')
+    return bool(long.match(value))
 
 
 @validate_str
@@ -456,7 +435,8 @@ def ismac(value):
 
     :param value: string to validate MAC address
     """
-    return bool(re.match(patterns['mac'], value))
+    mac = re.compile(r'^([0-9a-fA-F][0-9a-fA-F]:){5}([0-9a-fA-F][0-9a-fA-F])$')
+    return bool(mac.match(value))
 
 
 @validate_str
@@ -475,7 +455,8 @@ def ismd5(value):
 
     :param value: string to validate MD5 encoding
     """
-    return bool(re.match(patterns['md5'], value))
+    md5 = re.compile(r'^[a-fA-F0-9]{32}$')
+    return bool(md5.match(value))
 
 
 @validate_str
@@ -494,7 +475,8 @@ def issha1(value):
 
     :param value: string to validate SHA1 encoding
     """
-    return bool(re.match(patterns['sha1'], value))
+    sha1 = re.compile(r'^[a-fA-F0-9]{40}$')
+    return bool(sha1.match(value))
 
 
 @validate_str
@@ -513,7 +495,8 @@ def issha256(value):
 
     :param value: string to validate SHA256 encoding
     """
-    return bool(re.match(patterns['sha256'], value))
+    sha256 = re.compile(r'^[a-fA-F0-9]{64}$')
+    return bool(sha256.match(value))
 
 
 @validate_str
@@ -532,7 +515,8 @@ def issha512(value):
 
     :param value: string to validate SHA512 encoding
     """
-    return bool(re.match(patterns['sha512'], value))
+    sha512 = re.compile(r'^[a-fA-F0-9]{128}$')
+    return bool(sha512.match(value))
 
 
 @validate_str
@@ -570,7 +554,8 @@ def isiso8601(value):
 
     :param value: string to validate ISO 8601 date
     """
-    return bool(re.match(patterns['iso8601'], value))
+    iso8601 = re.compile(r'^([+-]?\d{4}(?!\d{2}\b))((-?)((0[1-9]|1[0-2])(\3([12]\d|0[1-9]|3[01]))?|W([0-4]\d|5[0-2])(-?[1-7])?|(00[1-9]|0[1-9]\d|[12]\d{2}|3([0-5]\d|6[1-6])))([T\s]((([01]\d|2[0-3])((:?)[0-5]\d)?|24:?00)([.,]\d+(?!:))?)?(\17[0-5]\d([.,]\d+)?)?([zZ]|([+-])([01]\d|2[0-3]):?([0-5]\d)?)?)?)?$')
+    return bool(iso8601.match(value))
 
 
 @validate_str
@@ -680,9 +665,10 @@ def isdns(value):
 
     :param value: string to validate DNS name
     """
+    dns = re.compile(r'^([a-zA-Z0-9_][a-zA-Z0-9_-]{0,62})(\.[a-zA-Z0-9_][a-zA-Z0-9_-]{0,62})*[._]?$')
     if value == '' or len(value.replace('.', '')) > 255:
         return False
-    return (not isip(value)) and bool(re.match(patterns['dns'], value))
+    return (not isip(value)) and bool(dns.match(value))
 
 
 @validate_str
@@ -701,9 +687,10 @@ def isssn(value):
 
     :param value: string to validate U.S. Social Security Number
     """
+    ssn = re.compile(r'^\d{3}[- ]?\d{2}[- ]?\d{4}$')
     if value == '' or len(value) != 11:
         return False
-    return bool(re.match(patterns['ssn'], value))
+    return bool(ssn.match(value))
 
 
 @validate_str
@@ -722,7 +709,8 @@ def issemver(value):
 
     :param value: string to validate semantic version
     """
-    return bool(re.match(patterns['semver'], value))
+    semver = re.compile(r'^v?(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)\.(?:0|[1-9]\d*)(-(0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*)(\.(0|[1-9]\d*|\d*[a-zA-Z-][0-9a-zA-Z-]*))*)?(\+[0-9a-zA-Z-]+(\.[0-9a-zA-Z-]+)*)?$')
+    return bool(semver.match(value))
 
 
 @validate_str
@@ -762,7 +750,8 @@ def ismultibyte(value):
 
     :param value: string to validate one or more multibyte chars
     """
-    return bool(re.match(patterns['multi_byte'], value))
+    multi_byte = re.compile(r"[^\x00-\x7F]")
+    return bool(multi_byte.match(value))
 
 
 @validate_str
@@ -784,13 +773,15 @@ def isfilepath(value):
 
     :param value: string to validate file path
     """
-    if re.match(patterns['win_path'], value):
+    win_path = re.compile(r'^[a-zA-Z]:\\(?:[^\\/:*?"<>|\r\n]+\\)*[^\\/:*?"<>|\r\n]*$')
+    nix_path = re.compile(r'^(/[^/\x00]*)+/?$')
+    if win_path.match(value):
         # check windows path limit see:
         # http://msdn.microsoft.com/en-us/library/aa365247(VS.85).aspx#maxpath
         if len(value[3:]) > 32767:
             return False, 'Win'
         return True, 'Win'
-    elif re.match(patterns['unix_path'], value):
+    elif nix_path.match(value):
         return True, 'Unix'
     return False, 'Unknown'
 
@@ -811,7 +802,8 @@ def isdatauri(value):
 
     :param value: string to validate base64 encoded data URI
     """
-    return bool(re.match(patterns['data_uri'], value))
+    data_uri = re.compile(r"\s*data:([a-zA-Z]+/[a-zA-Z0-9\-+]+(;[a-zA-Z\-]+=[a-zA-Z0-9\-]+)?)?(;base64)?,[a-zA-Z0-9!$&',()*+,;=\-._~:@/?%\s]*\s*$")
+    return bool(data_uri.match(value))
 
 
 @validate_str
@@ -877,9 +869,10 @@ def isurl(value):
 
     :param value: string to validate URL
     """
+    url = re.compile(r'^((ftp|tcp|irc|udp|wss?|https?)://)?(\S+(:\S*)?@)?((([1-9]\d?|1\d\d|2[01]\d|22[0-3])(\.(1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.([0-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(\[(([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]+|::(ffff(:0{1,4})?:)?((25[0-5]|(2[0-4]|1?[0-9])?[0-9])\.){3}(25[0-5]|(2[0-4]|1?[0-9])?[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1?[0-9])?[0-9])\.){3}(25[0-5]|(2[0-4]|1?[0-9])?[0-9]))\])|(([a-zA-Z0-9]([a-zA-Z0-9-_]+)?[a-zA-Z0-9]([-.][a-zA-Z0-9]+)*)|(((www\.)|([a-zA-Z0-9]([-.][-._a-zA-Z0-9]+)*))?))?(([a-zA-Z\u00a1-\uffff0-9]+-?-?)*[a-zA-Z\u00a1-\uffff0-9]+)(?:\.([a-zA-Z\u00a1-\uffff]+))?))\.?(:(\d{1,5}))?((/|\?|#)[^\s]*)?$')
     if value == '' or len(value) >= 2083 or len(value) <= 3:
         return False
-    return bool(re.match(patterns['url'], value))
+    return bool(url.match(value))
 
 
 @validate_str
@@ -898,10 +891,10 @@ def iscrcard(value):
 
     :param value: string to validate credit card
     """
+    pattern = re.compile(r"^(?:4[0-9]{12}(?:[0-9]{3})?|5[1-5][0-9]{14}|6(?:011|5[0-9][0-9])[0-9]{12}|3[47][0-9]{13}|3(?:0[0-5]|[68][0-9])[0-9]{11}|(?:2131|1800|35\d{3})\d{11})$")
     sanitized = re.sub(r'[^0-9]+', '', value)
-    if not re.match(patterns['credit_card'], sanitized):
+    if not pattern.match(sanitized):
         return False
-
     summation = 0
     should_double = False
     for i in reversed(range(len(sanitized))):
@@ -936,7 +929,8 @@ def isisin(value):
 
     :param value: string to validate ISIN
     """
-    if not re.match(patterns['isin'], value):
+    pattern = re.compile(r'^[A-Z]{2}[0-9A-Z]{9}[0-9]$')
+    if not pattern.match(value):
         return False
 
     checksum_str = re.sub(r'[A-Z]', lambda ch: str(int(ch.group(0), 36)), value)
@@ -973,9 +967,10 @@ def isiban(value):
 
     :param value: string to validate IBAN code
     """
+    pattern = re.compile(r'^[A-Z]{2}[0-9]{2}[A-Z0-9]{11,30}$')
     cleaned_value = value.replace(' ', '').replace('\t', '')
     iban = cleaned_value[4:] + cleaned_value[:4]
-    if not re.match(patterns['iban'], cleaned_value):
+    if not pattern.match(cleaned_value):
         return False
     digits = int(''.join(str(int(ch, 36)) for ch in iban))  # BASE 36: 0..9,A..Z -> 0..35
     return digits % 97 == 1
@@ -997,23 +992,66 @@ def isimei(value):
 
     :param value: string to validate imei
     """
+    pattern = re.compile(r'^[0-9]{15}$')
     sanitized = re.sub(r'[ -]', '', value)
-    if not re.match(patterns['imei'], sanitized):
+    if not pattern.match(sanitized):
         return False
 
-    shouldDouble = True
-    totalSum = 0
+    should_double = True
+    total_sum = 0
     for digit in reversed(sanitized[:-1]):
-        digitInt = int(digit)
-        if (shouldDouble):
-            digitInt = digitInt * 2
+        digit_int = int(digit)
+        if should_double:
+            digit_int = digit_int * 2
 
-        if (digitInt >= 10):
-            totalSum += (digitInt - 9)
+        if digit_int >= 10:
+            total_sum += (digit_int - 9)
         else:
-            totalSum += digitInt
-        shouldDouble = not shouldDouble
-    if (str(10 - (totalSum % 10))[-1] == sanitized[-1]):
+            total_sum += digit_int
+        should_double = not should_double
+    if str(10 - (total_sum % 10))[-1] == sanitized[-1]:
         return True
     else:
         return False
+
+
+@validate_str
+def ismimetype(value):
+    """
+    Checks if the provided string matches to a correct Media type format (MIME type)
+    If the value is a valid MIME Type, this function returns ``True``, otherwise ``False``.
+
+    Examples::
+
+        >>> ismimetype('application/xhtml+xml')
+        True
+
+        >>> ismimetype('application/json/text')
+        False
+
+    :param value: string to validate MIME Type
+    """
+    simple = re.compile(r'^(application|audio|font|image|message|model|multipart|text|video)/[a-zA-Z0-9.\-+]{1,100}$', re.IGNORECASE)
+    text = re.compile(r'^text/[a-zA-Z0-9.\-+]{1,100};\s?charset=("[a-zA-Z0-9.\-+\s]{0,70}"|[a-zA-Z0-9.\-+]{0,70})(\s?\([a-zA-Z0-9.\-+\s]{1,20}\))?$', re.IGNORECASE)
+    multipart = re.compile(r'^multipart/[a-zA-Z0-9.\-+]{1,100}(;\s?(boundary|charset)=("[a-zA-Z0-9.\-+\s]{0,70}"|[a-zA-Z0-9.\-+]{0,70})(\s?\([a-zA-Z0-9.\-+\s]{1,20}\))?){0,2}$', re.IGNORECASE)
+    return bool(simple.match(value) or text.match(value) or multipart.match(value))
+
+
+@validate_str
+def isisrc(value):
+    """
+    Checks if the provided string is valid ISRC(International Standard Recording Code)
+    If the value is a valid ISRC, this function returns ``True``, otherwise ``False``.
+
+    Examples::
+
+        >>> isisrc('USAT29900609')
+        True
+
+        >>> isisrc('USAT2990060')
+        False
+
+    :param value: string to validate MIME Type
+    """
+    isrc = re.compile(r'^[A-Z]{2}[0-9A-Z]{3}\d{2}\d{5}$')
+    return bool(isrc.match(value))

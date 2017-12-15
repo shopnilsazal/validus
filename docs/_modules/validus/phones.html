@@ -1,23 +1,21 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>validus.phones &#8212; validus 0.1.0 documentation</title>
-    
+    <title>validus.phones &#8212; validus 0.2.0 documentation</title>
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.1.0',
+        VERSION:     '0.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../../_static/jquery.js"></script>
@@ -25,8 +23,6 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" />
-    <link rel="top" title="validus 0.1.0 documentation" href="../../index.html" />
-    <link rel="up" title="Module code" href="../index.html" />
    
   <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
   
@@ -34,7 +30,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <body role="document">
+  <body>
   
 
     <div class="document">
@@ -46,55 +42,9 @@
 <span></span><span class="kn">from</span> <span class="nn">.utils</span> <span class="k">import</span> <span class="n">validate_str</span>
 <span class="kn">import</span> <span class="nn">re</span>
 
-<span class="n">phones</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s1">&#39;ar-DZ&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^(\+?213|0)(5|6|7)\d</span><span class="si">{8}</span><span class="s1">$&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;ar-SY&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^(!?(\+?963)|0)?9\d</span><span class="si">{8}</span><span class="s1">$&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;ar-SA&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^(!?(\+?966)|0)?5\d</span><span class="si">{8}</span><span class="s1">$&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;en-US&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^(\+?1)?[2-9]\d</span><span class="si">{2}</span><span class="s1">[2-9](?!11)\d</span><span class="si">{6}</span><span class="s1">$&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;cs-CZ&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^(\+?420)? ?[1-9][0-9]</span><span class="si">{2}</span><span class="s1"> ?[0-9]</span><span class="si">{3}</span><span class="s1"> ?[0-9]</span><span class="si">{3}</span><span class="s1">$&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;de-DE&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^(\+?49[ \.\-])?([\(]</span><span class="si">{1}</span><span class="s1">[0-9]{1,6}[\)])?([0-9 \.\-</span><span class="se">\&#39;</span><span class="s1">]{3,20})((x|ext|extension)[ ]?[0-9]{1,4})?$&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;da-DK&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^(\+?45)?(\d</span><span class="si">{8}</span><span class="s1">)$&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;el-GR&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^(\+?30)?(69\d</span><span class="si">{8}</span><span class="s1">)$&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;en-AU&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^(\+?61|0)4\d</span><span class="si">{8}</span><span class="s1">$&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;en-GB&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^(\+?44|0)7\d</span><span class="si">{9}</span><span class="s1">$&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;en-HK&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^(\+?852\-?)?[569]\d</span><span class="si">{3}</span><span class="s1">\-?\d</span><span class="si">{4}</span><span class="s1">$&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;en-IN&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^(\+?91|0)?[789]\d</span><span class="si">{9}</span><span class="s1">$&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;en-NG&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^(\+?234|0)?[789]\d</span><span class="si">{9}</span><span class="s1">$&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;en-NZ&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^(\+?64|0)2\d{7,9}$&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;en-ZA&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^(\+?27|0)\d</span><span class="si">{9}</span><span class="s1">$&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;en-ZM&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^(\+?26)?09[567]\d</span><span class="si">{7}</span><span class="s1">$&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;es-ES&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^(\+?34)?(6\d</span><span class="si">{1}</span><span class="s1">|7[1234])\d</span><span class="si">{7}</span><span class="s1">$&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;fi-FI&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^(\+?358|0)\s?(4(0|1|2|4|5)?|50)\s?(\d\s?){4,8}\d$&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;fr-FR&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^(\+?33|0)[67]\d</span><span class="si">{8}</span><span class="s1">$&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;he-IL&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^(\+972|0)([23489]|5[0248]|77)[1-9]\d</span><span class="si">{6}</span><span class="s1">&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;hu-HU&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^(\+?36)(20|30|70)\d</span><span class="si">{7}</span><span class="s1">$&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;id-ID&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^(\+?62|0[1-9])[\s|\d]+$&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;it-IT&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^(\+?39)?\s?3\d</span><span class="si">{2}</span><span class="s1"> ?\d{6,7}$&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;ja-JP&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^(\+?81|0)\d{1,4}[ \-]?\d{1,4}[ \-]?\d</span><span class="si">{4}</span><span class="s1">$&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;ms-MY&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^(\+?6?01)</span><span class="si">{1}</span><span class="s1">(([145]</span><span class="si">{1}</span><span class="s1">(\-|\s)?\d{7,8})|([236789]</span><span class="si">{1}</span><span class="s1">(\s|\-)?\d</span><span class="si">{7}</span><span class="s1">))$&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;nb-NO&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^(\+?47)?[49]\d</span><span class="si">{7}</span><span class="s1">$&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;nl-BE&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^(\+?32|0)4?\d</span><span class="si">{8}</span><span class="s1">$&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;nn-NO&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^(\+?47)?[49]\d</span><span class="si">{7}</span><span class="s1">$&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;pl-PL&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^(\+?48)? ?[5-8]\d ?\d</span><span class="si">{3}</span><span class="s1"> ?\d</span><span class="si">{2}</span><span class="s1"> ?\d</span><span class="si">{2}</span><span class="s1">$&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;pt-BR&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^(\+?55|0)\-?[1-9]</span><span class="si">{2}</span><span class="s1">\-?[2-9]</span><span class="si">{1}</span><span class="s1">\d{3,4}\-?\d</span><span class="si">{4}</span><span class="s1">$&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;pt-PT&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^(\+?351)?9[1236]\d</span><span class="si">{7}</span><span class="s1">$&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;ro-RO&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^(\+?4?0)\s?7\d</span><span class="si">{2}</span><span class="s1">(</span><span class="se">\&#39;</span><span class="s1">|\s|\.|\-)?\d</span><span class="si">{3}</span><span class="s1">(\s|\.|\-)?\d</span><span class="si">{3}</span><span class="s1">$&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;en-PK&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^((\+92)|(0092))-{0,1}\d</span><span class="si">{3}</span><span class="s1">-{0,1}\d</span><span class="si">{7}</span><span class="s1">$|^\d</span><span class="si">{11}</span><span class="s1">$|^\d</span><span class="si">{4}</span><span class="s1">-\d</span><span class="si">{7}</span><span class="s1">$&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;ru-RU&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^(\+?7|8)?9\d</span><span class="si">{9}</span><span class="s1">$&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;sr-RS&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^(\+3816|06)[- \d]{5,9}$&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;tr-TR&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^(\+?90|0)?5\d</span><span class="si">{9}</span><span class="s1">$&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;vi-VN&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^(\+?84|0)?((1(2([0-9])|6([2-9])|88|99))|(9((?!5)[0-9])))([0-9]</span><span class="si">{7}</span><span class="s1">)$&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;zh-CN&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^(\+?0?86\-?)?1[345789]\d</span><span class="si">{9}</span><span class="s1">$&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;zh-TW&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^(\+?886\-?|0)?9\d</span><span class="si">{8}</span><span class="s1">$&#39;</span>
-<span class="p">}</span>
 
-<span class="n">phones</span><span class="p">[</span><span class="s1">&#39;en-CA&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">phones</span><span class="p">[</span><span class="s1">&#39;en-US&#39;</span><span class="p">]</span>
-<span class="n">phones</span><span class="p">[</span><span class="s1">&#39;fr-BE&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">phones</span><span class="p">[</span><span class="s1">&#39;nl-BE&#39;</span><span class="p">]</span>
-<span class="n">phones</span><span class="p">[</span><span class="s1">&#39;zh-HK&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">phones</span><span class="p">[</span><span class="s1">&#39;en-HK&#39;</span><span class="p">]</span>
-
-
-<span class="nd">@validate_str</span>
-<div class="viewcode-block" id="isphone"><a class="viewcode-back" href="../../usage.html#validus.isphone">[docs]</a><span class="k">def</span> <span class="nf">isphone</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">locale</span><span class="o">=</span><span class="s1">&#39;en-US&#39;</span><span class="p">):</span>
+<div class="viewcode-block" id="isphone"><a class="viewcode-back" href="../../usage.html#validus.isphone">[docs]</a><span class="nd">@validate_str</span>
+<span class="k">def</span> <span class="nf">isphone</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">locale</span><span class="o">=</span><span class="s1">&#39;en-US&#39;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Return whether or not given value is valid mobile number according to given locale. Default locale is &#39;en-US&#39;.</span>
 <span class="sd">    If the value is valid mobile number, this function returns ``True``, otherwise ``False``.</span>
@@ -102,7 +52,7 @@
 <span class="sd">    ``el-GR``, ``en-AU``, ``en-GB``, ``en-HK``, ``zh-HK``, ``en-IN``, ``en-NG``, ``en-NZ``, ``en-ZA``, ``en-ZM``</span>
 <span class="sd">    ``es-ES``, ``fi-FI``, ``fr-FR``, ``he-IL``, ``hu-HU``, ``id-ID``, ``it-IT``, ``ja-JP``, ``ms-MY``, ``nb-NO``</span>
 <span class="sd">    ``nl-BE``, ``fr-BE``, ``nn-NO``, ``pl-PL``, ``pt-BR``, ``pt-PT``, ``ro-RO``, ``en-PK``, ``ru-RU``, ``sr-RS``</span>
-<span class="sd">    ``tr-TR``, ``vi-VN``, ``zh-CN``, ``zh-TW``</span>
+<span class="sd">    ``tr-TR``, ``vi-VN``, ``zh-CN``, ``zh-TW``, ``bn-BD``</span>
 
 <span class="sd">    Examples::</span>
 
@@ -115,10 +65,60 @@
 <span class="sd">    :param value: string to validate mobile number</span>
 <span class="sd">    :param locale: locale of mobile number to validate</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">phones</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;ar-DZ&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^(\+?213|0)(5|6|7)\d</span><span class="si">{8}</span><span class="s1">$&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;ar-SY&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^(!?(\+?963)|0)?9\d</span><span class="si">{8}</span><span class="s1">$&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;ar-SA&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^(!?(\+?966)|0)?5\d</span><span class="si">{8}</span><span class="s1">$&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;bn-BD&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^(\+?88)?(01[56789]\d</span><span class="si">{2}</span><span class="s1">(\s|\-)?\d</span><span class="si">{6}</span><span class="s1">)$&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;en-US&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^(\+?1)?[2-9]\d</span><span class="si">{2}</span><span class="s1">[2-9](?!11)\d</span><span class="si">{6}</span><span class="s1">$&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;cs-CZ&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^(\+?420)? ?[1-9][0-9]</span><span class="si">{2}</span><span class="s1"> ?[0-9]</span><span class="si">{3}</span><span class="s1"> ?[0-9]</span><span class="si">{3}</span><span class="s1">$&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;de-DE&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^(\+?49[ \.\-])?([\(]</span><span class="si">{1}</span><span class="s1">[0-9]{1,6}[\)])?([0-9 \.\-</span><span class="se">\&#39;</span><span class="s1">]{3,20})((x|ext|extension)[ ]?[0-9]{1,4})?$&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;da-DK&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^(\+?45)?(\d</span><span class="si">{8}</span><span class="s1">)$&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;el-GR&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^(\+?30)?(69\d</span><span class="si">{8}</span><span class="s1">)$&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;en-AU&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^(\+?61|0)4\d</span><span class="si">{8}</span><span class="s1">$&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;en-GB&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^(\+?44|0)7\d</span><span class="si">{9}</span><span class="s1">$&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;en-HK&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^(\+?852\-?)?[569]\d</span><span class="si">{3}</span><span class="s1">\-?\d</span><span class="si">{4}</span><span class="s1">$&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;en-IN&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^(\+?91|0)?[789]\d</span><span class="si">{9}</span><span class="s1">$&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;en-NG&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^(\+?234|0)?[789]\d</span><span class="si">{9}</span><span class="s1">$&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;en-NZ&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^(\+?64|0)2\d{7,9}$&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;en-ZA&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^(\+?27|0)\d</span><span class="si">{9}</span><span class="s1">$&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;en-ZM&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^(\+?26)?09[567]\d</span><span class="si">{7}</span><span class="s1">$&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;es-ES&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^(\+?34)?(6\d</span><span class="si">{1}</span><span class="s1">|7[1234])\d</span><span class="si">{7}</span><span class="s1">$&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;fi-FI&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^(\+?358|0)\s?(4(0|1|2|4|5)?|50)\s?(\d\s?){4,8}\d$&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;fr-FR&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^(\+?33|0)[67]\d</span><span class="si">{8}</span><span class="s1">$&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;he-IL&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^(\+972|0)([23489]|5[0248]|77)[1-9]\d</span><span class="si">{6}</span><span class="s1">&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;hu-HU&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^(\+?36)(20|30|70)\d</span><span class="si">{7}</span><span class="s1">$&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;id-ID&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^(\+?62|0[1-9])[\s|\d]+$&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;it-IT&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^(\+?39)?\s?3\d</span><span class="si">{2}</span><span class="s1"> ?\d{6,7}$&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;ja-JP&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^(\+?81|0)\d{1,4}[ \-]?\d{1,4}[ \-]?\d</span><span class="si">{4}</span><span class="s1">$&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;ms-MY&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^(\+?6?01)</span><span class="si">{1}</span><span class="s1">(([145]</span><span class="si">{1}</span><span class="s1">(\-|\s)?\d{7,8})|([236789]</span><span class="si">{1}</span><span class="s1">(\s|\-)?\d</span><span class="si">{7}</span><span class="s1">))$&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;nb-NO&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^(\+?47)?[49]\d</span><span class="si">{7}</span><span class="s1">$&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;nl-BE&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^(\+?32|0)4?\d</span><span class="si">{8}</span><span class="s1">$&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;nn-NO&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^(\+?47)?[49]\d</span><span class="si">{7}</span><span class="s1">$&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;pl-PL&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^(\+?48)? ?[5-8]\d ?\d</span><span class="si">{3}</span><span class="s1"> ?\d</span><span class="si">{2}</span><span class="s1"> ?\d</span><span class="si">{2}</span><span class="s1">$&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;pt-BR&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^(\+?55|0)\-?[1-9]</span><span class="si">{2}</span><span class="s1">\-?[2-9]</span><span class="si">{1}</span><span class="s1">\d{3,4}\-?\d</span><span class="si">{4}</span><span class="s1">$&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;pt-PT&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^(\+?351)?9[1236]\d</span><span class="si">{7}</span><span class="s1">$&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;ro-RO&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^(\+?4?0)\s?7\d</span><span class="si">{2}</span><span class="s1">(</span><span class="se">\&#39;</span><span class="s1">|\s|\.|\-)?\d</span><span class="si">{3}</span><span class="s1">(\s|\.|\-)?\d</span><span class="si">{3}</span><span class="s1">$&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;en-PK&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^((\+92)|(0092))-{0,1}\d</span><span class="si">{3}</span><span class="s1">-{0,1}\d</span><span class="si">{7}</span><span class="s1">$|^\d</span><span class="si">{11}</span><span class="s1">$|^\d</span><span class="si">{4}</span><span class="s1">-\d</span><span class="si">{7}</span><span class="s1">$&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;ru-RU&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^(\+?7|8)?9\d</span><span class="si">{9}</span><span class="s1">$&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;sr-RS&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^(\+3816|06)[- \d]{5,9}$&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;tr-TR&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^(\+?90|0)?5\d</span><span class="si">{9}</span><span class="s1">$&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;vi-VN&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^(\+?84|0)?((1(2([0-9])|6([2-9])|88|99))|(9((?!5)[0-9])))([0-9]</span><span class="si">{7}</span><span class="s1">)$&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;zh-CN&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^(\+?0?86\-?)?1[345789]\d</span><span class="si">{9}</span><span class="s1">$&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;zh-TW&#39;</span><span class="p">:</span> <span class="sa">r</span><span class="s1">&#39;^(\+?886\-?|0)?9\d</span><span class="si">{8}</span><span class="s1">$&#39;</span>
+    <span class="p">}</span>
+
+    <span class="n">phones</span><span class="p">[</span><span class="s1">&#39;en-CA&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">phones</span><span class="p">[</span><span class="s1">&#39;en-US&#39;</span><span class="p">]</span>
+    <span class="n">phones</span><span class="p">[</span><span class="s1">&#39;fr-BE&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">phones</span><span class="p">[</span><span class="s1">&#39;nl-BE&#39;</span><span class="p">]</span>
+    <span class="n">phones</span><span class="p">[</span><span class="s1">&#39;zh-HK&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">phones</span><span class="p">[</span><span class="s1">&#39;en-HK&#39;</span><span class="p">]</span>
+
     <span class="n">loc</span> <span class="o">=</span> <span class="n">phones</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">locale</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">loc</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Please provide a supported locale.&#39;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">loc</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span></div>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">loc_pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">loc</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">loc_pattern</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">value</span><span class="p">))</span></div>
 
 </pre></div>
 
@@ -138,9 +138,10 @@
 
 <h3>Navigation</h3>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../readme.html">validus</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../readme.html">Validus</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage.html#available-functions">Available Functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../authors.html">Credits</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../history.html">History</a></li>
@@ -173,7 +174,7 @@
       &copy;2017, Rafiqul Hasan.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.8</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.4</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
       
     </div>

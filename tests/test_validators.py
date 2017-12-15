@@ -111,7 +111,9 @@ class TestValidators(unittest.TestCase):
 
     def test_ispositive(self):
         self.assertTrue(validus.ispositive('123.123'))
+        self.assertTrue(validus.ispositive('123'))
         self.assertFalse(validus.ispositive('-.123'))
+        self.assertFalse(validus.ispositive('-123'))
 
     def test_isnonempty(self):
         self.assertTrue(validus.isnonempty('123.123'))
@@ -499,3 +501,55 @@ class TestValidators(unittest.TestCase):
         self.assertFalse(validus.isimei('5654645611'))
         self.assertFalse(validus.isimei('not1m3i00001010'))
         self.assertFalse(validus.isimei('22201751038607631'))
+
+    def test_ismimetype(self):
+        self.assertTrue(validus.ismimetype('application/json'))
+        self.assertTrue(validus.ismimetype('application/xhtml+xml'))
+        self.assertTrue(validus.ismimetype('audio/mp4'))
+        self.assertTrue(validus.ismimetype('image/bmp'))
+        self.assertTrue(validus.ismimetype('font/woff2'))
+        self.assertTrue(validus.ismimetype('message/http'))
+        self.assertTrue(validus.ismimetype('model/vnd.gtw'))
+        self.assertTrue(validus.ismimetype('multipart/form-data'))
+        self.assertTrue(validus.ismimetype('multipart/form-data; boundary=something'))
+        self.assertTrue(validus.ismimetype('multipart/form-data; charset=utf-8; boundary=something'))
+        self.assertTrue(validus.ismimetype('multipart/form-data; boundary=something; charset=utf-8'))
+        self.assertTrue(validus.ismimetype('multipart/form-data; boundary=something; charset="utf-8"'))
+        self.assertTrue(validus.ismimetype('multipart/form-data; boundary="something"; charset=utf-8'))
+        self.assertTrue(validus.ismimetype('multipart/form-data; boundary="something"; charset="utf-8"'))
+        self.assertTrue(validus.ismimetype('text/css'))
+        self.assertTrue(validus.ismimetype('text/plain; charset=utf8'))
+        self.assertTrue(validus.ismimetype('Text/HTML;Charset="utf-8"'))
+        self.assertTrue(validus.ismimetype('text/html;charset=UTF-8'))
+        self.assertTrue(validus.ismimetype('Text/html;charset=UTF-8'))
+        self.assertTrue(validus.ismimetype('text/html; charset=us-ascii'))
+        self.assertTrue(validus.ismimetype('text/html; charset=us-ascii (Plain text)'))
+        self.assertTrue(validus.ismimetype('text/html; charset="us-ascii"'))
+        self.assertTrue(validus.ismimetype('video/mp4'))
+
+        self.assertFalse(validus.ismimetype(''))
+        self.assertFalse(validus.ismimetype(' '))
+        self.assertFalse(validus.ismimetype('/'))
+        self.assertFalse(validus.ismimetype('f/b'))
+        self.assertFalse(validus.ismimetype('application'))
+        self.assertFalse(validus.ismimetype('application\\json'))
+        self.assertFalse(validus.ismimetype('application/json/text'))
+        self.assertFalse(validus.ismimetype('application/json; charset=utf-8'))
+        self.assertFalse(validus.ismimetype('audio/mp4; charset=utf-8'))
+        self.assertFalse(validus.ismimetype('image/bmp; charset=utf-8'))
+        self.assertFalse(validus.ismimetype('font/woff2; charset=utf-8'))
+        self.assertFalse(validus.ismimetype('message/http; charset=utf-8'))
+        self.assertFalse(validus.ismimetype('model/vnd.gtw; charset=utf-8'))
+        self.assertFalse(validus.ismimetype('video/mp4; charset=utf-8'))
+
+    def test_isisrc(self):
+        self.assertTrue(validus.isisrc('USAT29900609'))
+        self.assertTrue(validus.isisrc('GBAYE6800011'))
+        self.assertTrue(validus.isisrc('USRC15705223'))
+        self.assertTrue(validus.isisrc('USCA29500702'))
+
+        self.assertFalse(validus.isisrc('USAT2990060'))
+        self.assertFalse(validus.isisrc('SRC15705223'))
+        self.assertFalse(validus.isisrc('US-CA29500702'))
+        self.assertFalse(validus.isisrc('USARC15705223'))
+

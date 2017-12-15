@@ -1,23 +1,21 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>validus &#8212; validus 0.1.0 documentation</title>
-    
+    <title>Validus &#8212; validus 0.2.0 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.1.0',
+        VERSION:     '0.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
@@ -25,7 +23,6 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="top" title="validus 0.1.0 documentation" href="index.html" />
     <link rel="next" title="Installation" href="installation.html" />
     <link rel="prev" title="Welcome to validus’s documentation!" href="index.html" />
    
@@ -35,7 +32,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <body role="document">
+  <body>
   
 
     <div class="document">
@@ -44,30 +41,82 @@
           <div class="body" role="main">
             
   <div class="section" id="validus">
-<h1>validus<a class="headerlink" href="#validus" title="Permalink to this headline">¶</a></h1>
+<h1>Validus<a class="headerlink" href="#validus" title="Permalink to this headline">¶</a></h1>
 <a class="reference external image-reference" href="https://pypi.python.org/pypi/validus"><img alt="https://img.shields.io/pypi/v/validus.svg" src="https://img.shields.io/pypi/v/validus.svg" /></a>
 <a class="reference external image-reference" href="https://travis-ci.org/shopnilsazal/validus"><img alt="https://img.shields.io/travis/shopnilsazal/validus.svg" src="https://img.shields.io/travis/shopnilsazal/validus.svg" /></a>
-<img alt="https://readthedocs.org/projects/validus/badge/?version=latest" src="https://readthedocs.org/projects/validus/badge/?version=latest" />
-<dl class="docutils">
-<dt>A dead simple Python data validation library.        :target: <a class="reference external" href="https://validus.readthedocs.io/en/latest/?badge=latest">https://validus.readthedocs.io/en/latest/?badge=latest</a></dt>
-<dd><blockquote class="first">
-<div><table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">alt:</th><td class="field-body">Documentation Status</td>
-</tr>
-</tbody>
-</table>
-</div></blockquote>
-<p class="last">It supports Python 3 only.</p>
-</dd>
-</dl>
+<p>A dead simple Python data validation library.</p>
+<div class="section" id="requirements">
+<h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li>Python 3.3+</li>
+</ul>
+</div>
+<div class="section" id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>pip install validus
+</pre></div>
+</div>
+</div>
+<div class="section" id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">validus</span>
 
 <span class="gp">&gt;&gt;&gt; </span><span class="n">validus</span><span class="o">.</span><span class="n">isemail</span><span class="p">(</span><span class="s1">&#39;someone@example.com&#39;</span><span class="p">)</span>
 <span class="go">True</span>
 </pre></div>
+</div>
+</div>
+<div class="section" id="list-of-functions">
+<h2>List of Functions<a class="headerlink" href="#list-of-functions" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">isascii</span><span class="p">()</span>
+<span class="n">isprintascii</span><span class="p">()</span>
+<span class="n">isbase64</span><span class="p">()</span>
+<span class="n">isemail</span><span class="p">()</span>
+<span class="n">ishexadecimal</span><span class="p">()</span>
+<span class="n">isint</span><span class="p">()</span>
+<span class="n">isfloat</span><span class="p">()</span>
+<span class="n">isslug</span><span class="p">()</span>
+<span class="n">isuuid</span><span class="p">()</span>
+<span class="n">isuuid3</span><span class="p">()</span>
+<span class="n">isuuid4</span><span class="p">()</span>
+<span class="n">isuuid5</span><span class="p">()</span>
+<span class="n">isfullwidth</span><span class="p">()</span>
+<span class="n">ishalfwidth</span><span class="p">()</span>
+<span class="n">islatitude</span><span class="p">()</span>
+<span class="n">islongitude</span><span class="p">()</span>
+<span class="n">ismac</span><span class="p">()</span>
+<span class="n">ismd5</span><span class="p">()</span>
+<span class="n">issha1</span><span class="p">()</span>
+<span class="n">issha256</span><span class="p">()</span>
+<span class="n">issha512</span><span class="p">()</span>
+<span class="n">ismongoid</span><span class="p">()</span>
+<span class="n">isiso8601</span><span class="p">()</span>
+<span class="n">isbytelen</span><span class="p">()</span>
+<span class="n">isipv4</span><span class="p">()</span>
+<span class="n">isipv6</span><span class="p">()</span>
+<span class="n">isip</span><span class="p">()</span>
+<span class="n">isport</span><span class="p">()</span>
+<span class="n">isdns</span><span class="p">()</span>
+<span class="n">isssn</span><span class="p">()</span>
+<span class="n">issemver</span><span class="p">()</span>
+<span class="n">ismultibyte</span><span class="p">()</span>
+<span class="n">isfilepath</span><span class="p">()</span>
+<span class="n">isdatauri</span><span class="p">()</span>
+<span class="n">isjson</span><span class="p">()</span>
+<span class="n">istime</span><span class="p">()</span>
+<span class="n">isurl</span><span class="p">()</span>
+<span class="n">iscrcard</span><span class="p">()</span>
+<span class="n">isisin</span><span class="p">()</span>
+<span class="n">isiban</span><span class="p">()</span>
+<span class="n">ishexcolor</span><span class="p">()</span>
+<span class="n">isrgbcolor</span><span class="p">()</span>
+<span class="n">isphone</span><span class="p">()</span>
+<span class="n">isisbn</span><span class="p">()</span>
+<span class="n">isisbn10</span><span class="p">()</span>
+<span class="n">isisbn13</span><span class="p">()</span>
+<span class="n">isimei</span><span class="p">()</span>
+</pre></div>
+</div>
 </div>
 <div class="section" id="resources">
 <h2>Resources<a class="headerlink" href="#resources" title="Permalink to this headline">¶</a></h2>
@@ -100,13 +149,18 @@
 
 <h3>Navigation</h3>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">validus</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Validus</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#usage">Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#list-of-functions">List of Functions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#resources">Resources</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#credits">Credits</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html#available-functions">Available Functions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="authors.html">Credits</a></li>
 <li class="toctree-l1"><a class="reference internal" href="history.html">History</a></li>
@@ -116,7 +170,7 @@
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="index.html" title="previous chapter">Welcome to validus&#8217;s documentation!</a></li>
+      <li>Previous: <a href="index.html" title="previous chapter">Welcome to validus’s documentation!</a></li>
       <li>Next: <a href="installation.html" title="next chapter">Installation</a></li>
   </ul></li>
 </ul>
@@ -139,11 +193,11 @@
       &copy;2017, Rafiqul Hasan.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.8</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.4</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
       
       |
-      <a href="_sources/readme.txt"
+      <a href="_sources/readme.rst.txt"
           rel="nofollow">Page source</a>
     </div>
 

@@ -1,23 +1,21 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>Usage &#8212; validus 0.1.0 documentation</title>
-    
+    <title>Usage &#8212; validus 0.2.0 documentation</title>
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.1.0',
+        VERSION:     '0.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="_static/jquery.js"></script>
@@ -25,7 +23,6 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="top" title="validus 0.1.0 documentation" href="index.html" />
     <link rel="next" title="Contributing" href="contributing.html" />
     <link rel="prev" title="Installation" href="installation.html" />
    
@@ -35,7 +32,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
 
   </head>
-  <body role="document">
+  <body>
   
 
     <div class="document">
@@ -50,8 +47,9 @@
 <p>Each validator in <code class="docutils literal"><span class="pre">validus</span></code> is a simple function that takes the value to
 validate and possibly some additional key-value arguments. Each function returns
 <code class="docutils literal"><span class="pre">True</span></code> when validation succeeds and <code class="docutils literal"><span class="pre">False</span></code> when validation fails.</p>
+</div>
 <div class="section" id="basic-usage">
-<h3>Basic Usage<a class="headerlink" href="#basic-usage" title="Permalink to this headline">¶</a></h3>
+<h2>Basic Usage<a class="headerlink" href="#basic-usage" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">validus</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">validus</span><span class="o">.</span><span class="n">isemail</span><span class="p">(</span><span class="s1">&#39;me@mine.com&#39;</span><span class="p">)</span>
 <span class="go">True</span>
@@ -60,8 +58,11 @@ validate and possibly some additional key-value arguments. Each function returns
 </pre></div>
 </div>
 </div>
+</div>
+<div class="section" id="available-functions">
+<h1>Available Functions<a class="headerlink" href="#available-functions" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="module-validus">
-<span id="isascii"></span><h3>isascii<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h3>
+<span id="isascii"></span><h2>isascii<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="validus.isascii">
 <code class="descclassname">validus.</code><code class="descname">isascii</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/validus/validators.html#isascii"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#validus.isascii" title="Permalink to this definition">¶</a></dt>
@@ -79,7 +80,7 @@ If the value contains ASCII chars only, this function returns <code class="docut
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> &#8211; string to validate ASCII chars</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> – string to validate ASCII chars</td>
 </tr>
 </tbody>
 </table>
@@ -87,7 +88,7 @@ If the value contains ASCII chars only, this function returns <code class="docut
 
 </div>
 <div class="section" id="module-validus">
-<span id="isprintascii"></span><h3>isprintascii<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h3>
+<span id="isprintascii"></span><h2>isprintascii<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="validus.isprintascii">
 <code class="descclassname">validus.</code><code class="descname">isprintascii</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/validus/validators.html#isprintascii"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#validus.isprintascii" title="Permalink to this definition">¶</a></dt>
@@ -105,7 +106,7 @@ If the value contains printable ASCII chars only, this function returns <code cl
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> &#8211; string to validate printable ASCII chars</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> – string to validate printable ASCII chars</td>
 </tr>
 </tbody>
 </table>
@@ -113,7 +114,32 @@ If the value contains printable ASCII chars only, this function returns <code cl
 
 </div>
 <div class="section" id="module-validus">
-<span id="isbase64"></span><h3>isbase64<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h3>
+<span id="isnonempty"></span><h2>isnonempty<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="validus.isnonempty">
+<code class="descclassname">validus.</code><code class="descname">isnonempty</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/validus/validators.html#isnonempty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#validus.isnonempty" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return whether the value is not empty</p>
+<p>Examples:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">isnonempty</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">)</span>
+<span class="go">True</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">isnonempty</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="p">)</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> – string to validate whether value is not empty</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-validus">
+<span id="isbase64"></span><h2>isbase64<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="validus.isbase64">
 <code class="descclassname">validus.</code><code class="descname">isbase64</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/validus/validators.html#isbase64"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#validus.isbase64" title="Permalink to this definition">¶</a></dt>
@@ -131,7 +157,7 @@ If the value is base64 encoded, this function returns <code class="docutils lite
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> &#8211; string to validate base64 encoding</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> – string to validate base64 encoding</td>
 </tr>
 </tbody>
 </table>
@@ -139,7 +165,7 @@ If the value is base64 encoded, this function returns <code class="docutils lite
 
 </div>
 <div class="section" id="module-validus">
-<span id="isemail"></span><h3>isemail<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h3>
+<span id="isemail"></span><h2>isemail<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="validus.isemail">
 <code class="descclassname">validus.</code><code class="descname">isemail</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/validus/validators.html#isemail"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#validus.isemail" title="Permalink to this definition">¶</a></dt>
@@ -157,7 +183,7 @@ If the value is an email, this function returns <code class="docutils literal"><
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> &#8211; string to validate email</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> – string to validate email</td>
 </tr>
 </tbody>
 </table>
@@ -165,7 +191,7 @@ If the value is an email, this function returns <code class="docutils literal"><
 
 </div>
 <div class="section" id="module-validus">
-<span id="ishexadecimal"></span><h3>ishexadecimal<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h3>
+<span id="ishexadecimal"></span><h2>ishexadecimal<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="validus.ishexadecimal">
 <code class="descclassname">validus.</code><code class="descname">ishexadecimal</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/validus/validators.html#ishexadecimal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#validus.ishexadecimal" title="Permalink to this definition">¶</a></dt>
@@ -183,7 +209,7 @@ If the value is a hexadecimal number, this function returns <code class="docutil
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> &#8211; string to validate hexadecimal number</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> – string to validate hexadecimal number</td>
 </tr>
 </tbody>
 </table>
@@ -191,7 +217,7 @@ If the value is a hexadecimal number, this function returns <code class="docutil
 
 </div>
 <div class="section" id="module-validus">
-<span id="ishexcolor"></span><h3>ishexcolor<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h3>
+<span id="ishexcolor"></span><h2>ishexcolor<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="validus.ishexcolor">
 <code class="descclassname">validus.</code><code class="descname">ishexcolor</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/validus/validators.html#ishexcolor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#validus.ishexcolor" title="Permalink to this definition">¶</a></dt>
@@ -209,7 +235,7 @@ If the value is a hexadecimal color, this function returns <code class="docutils
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> &#8211; string to validate hexadecimal color</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> – string to validate hexadecimal color</td>
 </tr>
 </tbody>
 </table>
@@ -217,7 +243,7 @@ If the value is a hexadecimal color, this function returns <code class="docutils
 
 </div>
 <div class="section" id="module-validus">
-<span id="isrgbcolor"></span><h3>isrgbcolor<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h3>
+<span id="isrgbcolor"></span><h2>isrgbcolor<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="validus.isrgbcolor">
 <code class="descclassname">validus.</code><code class="descname">isrgbcolor</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/validus/validators.html#isrgbcolor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#validus.isrgbcolor" title="Permalink to this definition">¶</a></dt>
@@ -235,7 +261,7 @@ If the value is a rgb color, this function returns <code class="docutils literal
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> &#8211; string to validate rgb color</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> – string to validate rgb color</td>
 </tr>
 </tbody>
 </table>
@@ -243,7 +269,7 @@ If the value is a rgb color, this function returns <code class="docutils literal
 
 </div>
 <div class="section" id="module-validus">
-<span id="isint"></span><h3>isint<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h3>
+<span id="isint"></span><h2>isint<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="validus.isint">
 <code class="descclassname">validus.</code><code class="descname">isint</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/validus/validators.html#isint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#validus.isint" title="Permalink to this definition">¶</a></dt>
@@ -261,7 +287,7 @@ If the value is an integer, this function returns <code class="docutils literal"
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> &#8211; string to validate integer</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> – string to validate integer</td>
 </tr>
 </tbody>
 </table>
@@ -269,12 +295,18 @@ If the value is an integer, this function returns <code class="docutils literal"
 
 </div>
 <div class="section" id="module-validus">
-<span id="isfloat"></span><h3>isfloat<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h3>
+<span id="isfloat"></span><h2>isfloat<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="validus.isfloat">
 <code class="descclassname">validus.</code><code class="descname">isfloat</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/validus/validators.html#isfloat"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#validus.isfloat" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return whether or not given value is a float.
-If the value is a float, this function returns <code class="docutils literal"><span class="pre">True</span></code>, otherwise <code class="docutils literal"><span class="pre">False</span></code>.</p>
+This does not give the same answer as:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="nb">isinstance</span><span class="p">(</span><span class="n">num_value</span><span class="p">,</span><span class="nb">float</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Because isfloat(‘1’) returns true.  More strict typing requirements may want
+to use is_instance.</p>
+<p>If the value is a float, this function returns <code class="docutils literal"><span class="pre">True</span></code>, otherwise <code class="docutils literal"><span class="pre">False</span></code>.</p>
 <p>Examples:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">isfloat</span><span class="p">(</span><span class="s1">&#39;01.123&#39;</span><span class="p">)</span>
 <span class="go">True</span>
@@ -287,7 +319,7 @@ If the value is a float, this function returns <code class="docutils literal"><s
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> &#8211; string to validate float</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> – string to validate float</td>
 </tr>
 </tbody>
 </table>
@@ -295,7 +327,7 @@ If the value is a float, this function returns <code class="docutils literal"><s
 
 </div>
 <div class="section" id="module-validus">
-<span id="isslug"></span><h3>isslug<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h3>
+<span id="isslug"></span><h2>isslug<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="validus.isslug">
 <code class="descclassname">validus.</code><code class="descname">isslug</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/validus/validators.html#isslug"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#validus.isslug" title="Permalink to this definition">¶</a></dt>
@@ -314,7 +346,7 @@ underscores. If the value is a slug, this function returns <code class="docutils
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> &#8211; value to validate</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> – value to validate</td>
 </tr>
 </tbody>
 </table>
@@ -322,7 +354,7 @@ underscores. If the value is a slug, this function returns <code class="docutils
 
 </div>
 <div class="section" id="module-validus">
-<span id="isuuid"></span><h3>isuuid<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h3>
+<span id="isuuid"></span><h2>isuuid<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="validus.isuuid">
 <code class="descclassname">validus.</code><code class="descname">isuuid</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/validus/validators.html#isuuid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#validus.isuuid" title="Permalink to this definition">¶</a></dt>
@@ -340,7 +372,7 @@ If the value is a UUID (version 3, 4 or 5), this function returns <code class="d
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> &#8211; string to validate UUID (version 3, 4 or 5)</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> – string to validate UUID (version 3, 4 or 5)</td>
 </tr>
 </tbody>
 </table>
@@ -348,7 +380,7 @@ If the value is a UUID (version 3, 4 or 5), this function returns <code class="d
 
 </div>
 <div class="section" id="module-validus">
-<span id="isuuid3"></span><h3>isuuid3<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h3>
+<span id="isuuid3"></span><h2>isuuid3<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="validus.isuuid3">
 <code class="descclassname">validus.</code><code class="descname">isuuid3</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/validus/validators.html#isuuid3"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#validus.isuuid3" title="Permalink to this definition">¶</a></dt>
@@ -366,7 +398,7 @@ If the value is a UUID version 3, this function returns <code class="docutils li
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> &#8211; string to validate UUID version 3</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> – string to validate UUID version 3</td>
 </tr>
 </tbody>
 </table>
@@ -374,7 +406,7 @@ If the value is a UUID version 3, this function returns <code class="docutils li
 
 </div>
 <div class="section" id="module-validus">
-<span id="isuuid4"></span><h3>isuuid4<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h3>
+<span id="isuuid4"></span><h2>isuuid4<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="validus.isuuid4">
 <code class="descclassname">validus.</code><code class="descname">isuuid4</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/validus/validators.html#isuuid4"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#validus.isuuid4" title="Permalink to this definition">¶</a></dt>
@@ -392,7 +424,7 @@ If the value is a UUID version 4, this function returns <code class="docutils li
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> &#8211; string to validate UUID version 4</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> – string to validate UUID version 4</td>
 </tr>
 </tbody>
 </table>
@@ -400,7 +432,7 @@ If the value is a UUID version 4, this function returns <code class="docutils li
 
 </div>
 <div class="section" id="module-validus">
-<span id="isuuid5"></span><h3>isuuid5<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h3>
+<span id="isuuid5"></span><h2>isuuid5<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="validus.isuuid5">
 <code class="descclassname">validus.</code><code class="descname">isuuid5</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/validus/validators.html#isuuid5"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#validus.isuuid5" title="Permalink to this definition">¶</a></dt>
@@ -418,7 +450,7 @@ If the value is a UUID version 5, this function returns <code class="docutils li
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> &#8211; string to validate UUID version 5</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> – string to validate UUID version 5</td>
 </tr>
 </tbody>
 </table>
@@ -426,7 +458,7 @@ If the value is a UUID version 5, this function returns <code class="docutils li
 
 </div>
 <div class="section" id="module-validus">
-<span id="isfullwidth"></span><h3>isfullwidth<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h3>
+<span id="isfullwidth"></span><h2>isfullwidth<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="validus.isfullwidth">
 <code class="descclassname">validus.</code><code class="descname">isfullwidth</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/validus/validators.html#isfullwidth"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#validus.isfullwidth" title="Permalink to this definition">¶</a></dt>
@@ -444,7 +476,7 @@ If the value contains any full-width chars, this function returns <code class="d
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> &#8211; string to validate full-width chars</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> – string to validate full-width chars</td>
 </tr>
 </tbody>
 </table>
@@ -452,7 +484,7 @@ If the value contains any full-width chars, this function returns <code class="d
 
 </div>
 <div class="section" id="module-validus">
-<span id="ishalfwidth"></span><h3>ishalfwidth<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h3>
+<span id="ishalfwidth"></span><h2>ishalfwidth<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="validus.ishalfwidth">
 <code class="descclassname">validus.</code><code class="descname">ishalfwidth</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/validus/validators.html#ishalfwidth"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#validus.ishalfwidth" title="Permalink to this definition">¶</a></dt>
@@ -470,7 +502,7 @@ If the value contains any half-width chars, this function returns <code class="d
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> &#8211; string to validate half-width chars</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> – string to validate half-width chars</td>
 </tr>
 </tbody>
 </table>
@@ -478,7 +510,7 @@ If the value contains any half-width chars, this function returns <code class="d
 
 </div>
 <div class="section" id="module-validus">
-<span id="islatitude"></span><h3>islatitude<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h3>
+<span id="islatitude"></span><h2>islatitude<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="validus.islatitude">
 <code class="descclassname">validus.</code><code class="descname">islatitude</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/validus/validators.html#islatitude"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#validus.islatitude" title="Permalink to this definition">¶</a></dt>
@@ -496,7 +528,7 @@ If the value is valid latitude, this function returns <code class="docutils lite
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> &#8211; string to validate latitude</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> – string to validate latitude</td>
 </tr>
 </tbody>
 </table>
@@ -504,7 +536,7 @@ If the value is valid latitude, this function returns <code class="docutils lite
 
 </div>
 <div class="section" id="module-validus">
-<span id="islongitude"></span><h3>islongitude<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h3>
+<span id="islongitude"></span><h2>islongitude<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="validus.islongitude">
 <code class="descclassname">validus.</code><code class="descname">islongitude</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/validus/validators.html#islongitude"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#validus.islongitude" title="Permalink to this definition">¶</a></dt>
@@ -522,7 +554,7 @@ If the value is valid longitude, this function returns <code class="docutils lit
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> &#8211; string to validate longitude</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> – string to validate longitude</td>
 </tr>
 </tbody>
 </table>
@@ -530,7 +562,7 @@ If the value is valid longitude, this function returns <code class="docutils lit
 
 </div>
 <div class="section" id="module-validus">
-<span id="ismac"></span><h3>ismac<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h3>
+<span id="ismac"></span><h2>ismac<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="validus.ismac">
 <code class="descclassname">validus.</code><code class="descname">ismac</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/validus/validators.html#ismac"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#validus.ismac" title="Permalink to this definition">¶</a></dt>
@@ -548,7 +580,7 @@ If the value is valid MAC address, this function returns <code class="docutils l
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> &#8211; string to validate MAC address</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> – string to validate MAC address</td>
 </tr>
 </tbody>
 </table>
@@ -556,7 +588,7 @@ If the value is valid MAC address, this function returns <code class="docutils l
 
 </div>
 <div class="section" id="module-validus">
-<span id="ismd5"></span><h3>ismd5<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h3>
+<span id="ismd5"></span><h2>ismd5<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="validus.ismd5">
 <code class="descclassname">validus.</code><code class="descname">ismd5</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/validus/validators.html#ismd5"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#validus.ismd5" title="Permalink to this definition">¶</a></dt>
@@ -574,7 +606,7 @@ If the value is MD5 encoded, this function returns <code class="docutils literal
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> &#8211; string to validate MD5 encoding</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> – string to validate MD5 encoding</td>
 </tr>
 </tbody>
 </table>
@@ -582,7 +614,7 @@ If the value is MD5 encoded, this function returns <code class="docutils literal
 
 </div>
 <div class="section" id="module-validus">
-<span id="ismongoid"></span><h3>ismongoid<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h3>
+<span id="ismongoid"></span><h2>ismongoid<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="validus.ismongoid">
 <code class="descclassname">validus.</code><code class="descname">ismongoid</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/validus/validators.html#ismongoid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#validus.ismongoid" title="Permalink to this definition">¶</a></dt>
@@ -600,7 +632,7 @@ If the value is a MongoDB ObjectId, this function returns <code class="docutils 
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> &#8211; string to validate MongoDB ObjectId</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> – string to validate MongoDB ObjectId</td>
 </tr>
 </tbody>
 </table>
@@ -608,7 +640,7 @@ If the value is a MongoDB ObjectId, this function returns <code class="docutils 
 
 </div>
 <div class="section" id="module-validus">
-<span id="isiso8601"></span><h3>isiso8601<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h3>
+<span id="isiso8601"></span><h2>isiso8601<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="validus.isiso8601">
 <code class="descclassname">validus.</code><code class="descname">isiso8601</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/validus/validators.html#isiso8601"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#validus.isiso8601" title="Permalink to this definition">¶</a></dt>
@@ -626,7 +658,7 @@ If the value is ISO 8601 date, this function returns <code class="docutils liter
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> &#8211; string to validate ISO 8601 date</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> – string to validate ISO 8601 date</td>
 </tr>
 </tbody>
 </table>
@@ -634,7 +666,7 @@ If the value is ISO 8601 date, this function returns <code class="docutils liter
 
 </div>
 <div class="section" id="module-validus">
-<span id="isipv4"></span><h3>isipv4<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h3>
+<span id="isipv4"></span><h2>isipv4<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="validus.isipv4">
 <code class="descclassname">validus.</code><code class="descname">isipv4</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/validus/validators.html#isipv4"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#validus.isipv4" title="Permalink to this definition">¶</a></dt>
@@ -652,7 +684,7 @@ If the value is an IP version 4, this function returns <code class="docutils lit
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> &#8211; string to validate IP version 4</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> – string to validate IP version 4</td>
 </tr>
 </tbody>
 </table>
@@ -660,7 +692,7 @@ If the value is an IP version 4, this function returns <code class="docutils lit
 
 </div>
 <div class="section" id="module-validus">
-<span id="isipv6"></span><h3>isipv6<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h3>
+<span id="isipv6"></span><h2>isipv6<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="validus.isipv6">
 <code class="descclassname">validus.</code><code class="descname">isipv6</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/validus/validators.html#isipv6"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#validus.isipv6" title="Permalink to this definition">¶</a></dt>
@@ -678,7 +710,7 @@ If the value is an IP version 6, this function returns <code class="docutils lit
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> &#8211; string to validate IP version 6</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> – string to validate IP version 6</td>
 </tr>
 </tbody>
 </table>
@@ -686,7 +718,7 @@ If the value is an IP version 6, this function returns <code class="docutils lit
 
 </div>
 <div class="section" id="module-validus">
-<span id="isip"></span><h3>isip<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h3>
+<span id="isip"></span><h2>isip<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="validus.isip">
 <code class="descclassname">validus.</code><code class="descname">isip</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/validus/validators.html#isip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#validus.isip" title="Permalink to this definition">¶</a></dt>
@@ -704,7 +736,7 @@ If the value is an IP version 4 or 6, this function returns <code class="docutil
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> &#8211; string to validate IP version 4 or 6</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> – string to validate IP version 4 or 6</td>
 </tr>
 </tbody>
 </table>
@@ -712,7 +744,7 @@ If the value is an IP version 4 or 6, this function returns <code class="docutil
 
 </div>
 <div class="section" id="module-validus">
-<span id="isport"></span><h3>isport<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h3>
+<span id="isport"></span><h2>isport<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="validus.isport">
 <code class="descclassname">validus.</code><code class="descname">isport</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/validus/validators.html#isport"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#validus.isport" title="Permalink to this definition">¶</a></dt>
@@ -730,7 +762,7 @@ If the value represents a valid port, this function returns <code class="docutil
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> &#8211; string to validate port</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> – string to validate port</td>
 </tr>
 </tbody>
 </table>
@@ -738,7 +770,7 @@ If the value represents a valid port, this function returns <code class="docutil
 
 </div>
 <div class="section" id="module-validus">
-<span id="isdns"></span><h3>isdns<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h3>
+<span id="isdns"></span><h2>isdns<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="validus.isdns">
 <code class="descclassname">validus.</code><code class="descname">isdns</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/validus/validators.html#isdns"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#validus.isdns" title="Permalink to this definition">¶</a></dt>
@@ -756,7 +788,7 @@ If the value represents a valid DNS name, this function returns <code class="doc
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> &#8211; string to validate DNS name</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> – string to validate DNS name</td>
 </tr>
 </tbody>
 </table>
@@ -764,7 +796,7 @@ If the value represents a valid DNS name, this function returns <code class="doc
 
 </div>
 <div class="section" id="module-validus">
-<span id="isssn"></span><h3>isssn<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h3>
+<span id="isssn"></span><h2>isssn<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="validus.isssn">
 <code class="descclassname">validus.</code><code class="descname">isssn</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/validus/validators.html#isssn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#validus.isssn" title="Permalink to this definition">¶</a></dt>
@@ -782,7 +814,7 @@ If the value is a U.S. Social Security Number, this function returns <code class
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> &#8211; string to validate U.S. Social Security Number</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> – string to validate U.S. Social Security Number</td>
 </tr>
 </tbody>
 </table>
@@ -790,7 +822,7 @@ If the value is a U.S. Social Security Number, this function returns <code class
 
 </div>
 <div class="section" id="module-validus">
-<span id="issemver"></span><h3>issemver<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h3>
+<span id="issemver"></span><h2>issemver<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="validus.issemver">
 <code class="descclassname">validus.</code><code class="descname">issemver</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/validus/validators.html#issemver"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#validus.issemver" title="Permalink to this definition">¶</a></dt>
@@ -808,7 +840,7 @@ If the value is valid semantic version, this function returns <code class="docut
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> &#8211; string to validate semantic version</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> – string to validate semantic version</td>
 </tr>
 </tbody>
 </table>
@@ -816,12 +848,12 @@ If the value is valid semantic version, this function returns <code class="docut
 
 </div>
 <div class="section" id="module-validus">
-<span id="isbytelen"></span><h3>isbytelen<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h3>
+<span id="isbytelen"></span><h2>isbytelen<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="validus.isbytelen">
 <code class="descclassname">validus.</code><code class="descname">isbytelen</code><span class="sig-paren">(</span><em>value</em>, <em>minimum</em>, <em>maximum</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/validus/validators.html#isbytelen"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#validus.isbytelen" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return whether or not given value&#8217;s length (in bytes) falls in a range.
-If the value&#8217;s length (in bytes) falls in a range, this function returns <code class="docutils literal"><span class="pre">True</span></code>, otherwise <code class="docutils literal"><span class="pre">False</span></code>.</p>
+<dd><p>Return whether or not given value’s length (in bytes) falls in a range.
+If the value’s length (in bytes) falls in a range, this function returns <code class="docutils literal"><span class="pre">True</span></code>, otherwise <code class="docutils literal"><span class="pre">False</span></code>.</p>
 <p>Examples:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">isbytelen</span><span class="p">(</span><span class="s1">&#39;123456&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
 <span class="go">True</span>
@@ -835,9 +867,9 @@ If the value&#8217;s length (in bytes) falls in a range, this function returns <
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>value</strong> &#8211; string to validate length (in bytes) falls in a range</li>
-<li><strong>minimum</strong> &#8211; minimum value of the range in integer</li>
-<li><strong>maximum</strong> &#8211; maximum value of the range in integer</li>
+<li><strong>value</strong> – string to validate length (in bytes) falls in a range</li>
+<li><strong>minimum</strong> – minimum value of the range in integer</li>
+<li><strong>maximum</strong> – maximum value of the range in integer</li>
 </ul>
 </td>
 </tr>
@@ -847,7 +879,7 @@ If the value&#8217;s length (in bytes) falls in a range, this function returns <
 
 </div>
 <div class="section" id="module-validus">
-<span id="ismultibyte"></span><h3>ismultibyte<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h3>
+<span id="ismultibyte"></span><h2>ismultibyte<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="validus.ismultibyte">
 <code class="descclassname">validus.</code><code class="descname">ismultibyte</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/validus/validators.html#ismultibyte"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#validus.ismultibyte" title="Permalink to this definition">¶</a></dt>
@@ -865,7 +897,7 @@ If the value contains one or more multibyte chars, this function returns <code c
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> &#8211; string to validate one or more multibyte chars</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> – string to validate one or more multibyte chars</td>
 </tr>
 </tbody>
 </table>
@@ -873,11 +905,11 @@ If the value contains one or more multibyte chars, this function returns <code c
 
 </div>
 <div class="section" id="module-validus">
-<span id="isfilepath"></span><h3>isfilepath<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h3>
+<span id="isfilepath"></span><h2>isfilepath<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="validus.isfilepath">
 <code class="descclassname">validus.</code><code class="descname">isfilepath</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/validus/validators.html#isfilepath"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#validus.isfilepath" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return whether or not given value is Win or Unix file path and returns it&#8217;s type.
+<dd><p>Return whether or not given value is Win or Unix file path and returns it’s type.
 If the value is Win or Unix file path, this function returns <code class="docutils literal"><span class="pre">True,</span> <span class="pre">Type</span></code>, otherwise <code class="docutils literal"><span class="pre">False,</span> <span class="pre">Type</span></code>.</p>
 <p>Examples:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">isfilepath</span><span class="p">(</span><span class="s1">&#39;c:\path</span><span class="se">\f</span><span class="s1">ile (x86)</span><span class="se">\b</span><span class="s1">ar&#39;</span><span class="p">)</span>
@@ -894,7 +926,7 @@ If the value is Win or Unix file path, this function returns <code class="docuti
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> &#8211; string to validate file path</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> – string to validate file path</td>
 </tr>
 </tbody>
 </table>
@@ -902,7 +934,7 @@ If the value is Win or Unix file path, this function returns <code class="docuti
 
 </div>
 <div class="section" id="module-validus">
-<span id="isdatauri"></span><h3>isdatauri<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h3>
+<span id="isdatauri"></span><h2>isdatauri<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="validus.isdatauri">
 <code class="descclassname">validus.</code><code class="descname">isdatauri</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/validus/validators.html#isdatauri"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#validus.isdatauri" title="Permalink to this definition">¶</a></dt>
@@ -920,7 +952,7 @@ If the value is base64 encoded data URI, this function returns <code class="docu
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> &#8211; string to validate base64 encoded data URI</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> – string to validate base64 encoded data URI</td>
 </tr>
 </tbody>
 </table>
@@ -928,7 +960,7 @@ If the value is base64 encoded data URI, this function returns <code class="docu
 
 </div>
 <div class="section" id="module-validus">
-<span id="isjson"></span><h3>isjson<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h3>
+<span id="isjson"></span><h2>isjson<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="validus.isjson">
 <code class="descclassname">validus.</code><code class="descname">isjson</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/validus/validators.html#isjson"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#validus.isjson" title="Permalink to this definition">¶</a></dt>
@@ -946,7 +978,7 @@ If the value is valid JSON, this function returns <code class="docutils literal"
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> &#8211; string to validate JSON</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> – string to validate JSON</td>
 </tr>
 </tbody>
 </table>
@@ -954,7 +986,7 @@ If the value is valid JSON, this function returns <code class="docutils literal"
 
 </div>
 <div class="section" id="module-validus">
-<span id="istime"></span><h3>istime<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h3>
+<span id="istime"></span><h2>istime<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="validus.istime">
 <code class="descclassname">validus.</code><code class="descname">istime</code><span class="sig-paren">(</span><em>value</em>, <em>fmt</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/validus/validators.html#istime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#validus.istime" title="Permalink to this definition">¶</a></dt>
@@ -973,8 +1005,8 @@ If the value is valid time, this function returns <code class="docutils literal"
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>value</strong> &#8211; string to validate time</li>
-<li><strong>fmt</strong> &#8211; format of time</li>
+<li><strong>value</strong> – string to validate time</li>
+<li><strong>fmt</strong> – format of time</li>
 </ul>
 </td>
 </tr>
@@ -984,7 +1016,7 @@ If the value is valid time, this function returns <code class="docutils literal"
 
 </div>
 <div class="section" id="module-validus">
-<span id="isurl"></span><h3>isurl<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h3>
+<span id="isurl"></span><h2>isurl<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="validus.isurl">
 <code class="descclassname">validus.</code><code class="descname">isurl</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/validus/validators.html#isurl"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#validus.isurl" title="Permalink to this definition">¶</a></dt>
@@ -1002,7 +1034,7 @@ If the value is an URL, this function returns <code class="docutils literal"><sp
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> &#8211; string to validate URL</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> – string to validate URL</td>
 </tr>
 </tbody>
 </table>
@@ -1010,7 +1042,7 @@ If the value is an URL, this function returns <code class="docutils literal"><sp
 
 </div>
 <div class="section" id="module-validus">
-<span id="iscrcard"></span><h3>iscrcard<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h3>
+<span id="iscrcard"></span><h2>iscrcard<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="validus.iscrcard">
 <code class="descclassname">validus.</code><code class="descname">iscrcard</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/validus/validators.html#iscrcard"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#validus.iscrcard" title="Permalink to this definition">¶</a></dt>
@@ -1028,7 +1060,7 @@ If the value is a credit card, this function returns <code class="docutils liter
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> &#8211; string to validate credit card</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> – string to validate credit card</td>
 </tr>
 </tbody>
 </table>
@@ -1036,7 +1068,7 @@ If the value is a credit card, this function returns <code class="docutils liter
 
 </div>
 <div class="section" id="module-validus">
-<span id="isisin"></span><h3>isisin<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h3>
+<span id="isisin"></span><h2>isisin<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="validus.isisin">
 <code class="descclassname">validus.</code><code class="descname">isisin</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/validus/validators.html#isisin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#validus.isisin" title="Permalink to this definition">¶</a></dt>
@@ -1054,7 +1086,7 @@ If the value is a valid ISIN, this function returns <code class="docutils litera
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> &#8211; string to validate ISIN</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> – string to validate ISIN</td>
 </tr>
 </tbody>
 </table>
@@ -1062,7 +1094,7 @@ If the value is a valid ISIN, this function returns <code class="docutils litera
 
 </div>
 <div class="section" id="module-validus">
-<span id="isiban"></span><h3>isiban<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h3>
+<span id="isiban"></span><h2>isiban<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="validus.isiban">
 <code class="descclassname">validus.</code><code class="descname">isiban</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/validus/validators.html#isiban"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#validus.isiban" title="Permalink to this definition">¶</a></dt>
@@ -1080,7 +1112,7 @@ If the value is a valid IBAN, this function returns <code class="docutils litera
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> &#8211; string to validate IBAN code</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> – string to validate IBAN code</td>
 </tr>
 </tbody>
 </table>
@@ -1088,17 +1120,17 @@ If the value is a valid IBAN, this function returns <code class="docutils litera
 
 </div>
 <div class="section" id="module-validus">
-<span id="isphone"></span><h3>isphone<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h3>
+<span id="isphone"></span><h2>isphone<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="validus.isphone">
 <code class="descclassname">validus.</code><code class="descname">isphone</code><span class="sig-paren">(</span><em>value</em>, <em>locale='en-US'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/validus/phones.html#isphone"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#validus.isphone" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return whether or not given value is valid mobile number according to given locale. Default locale is &#8216;en-US&#8217;.
+<dd><p>Return whether or not given value is valid mobile number according to given locale. Default locale is ‘en-US’.
 If the value is valid mobile number, this function returns <code class="docutils literal"><span class="pre">True</span></code>, otherwise <code class="docutils literal"><span class="pre">False</span></code>.
 Supported locales are: <code class="docutils literal"><span class="pre">ar-DZ</span></code>, <code class="docutils literal"><span class="pre">ar-SY</span></code>, <code class="docutils literal"><span class="pre">ar-SA</span></code>, <code class="docutils literal"><span class="pre">en-US</span></code>, <code class="docutils literal"><span class="pre">en-CA</span></code>, <code class="docutils literal"><span class="pre">cs-CZ</span></code>, <code class="docutils literal"><span class="pre">de-DE</span></code>, <code class="docutils literal"><span class="pre">da-DK</span></code>
 <code class="docutils literal"><span class="pre">el-GR</span></code>, <code class="docutils literal"><span class="pre">en-AU</span></code>, <code class="docutils literal"><span class="pre">en-GB</span></code>, <code class="docutils literal"><span class="pre">en-HK</span></code>, <code class="docutils literal"><span class="pre">zh-HK</span></code>, <code class="docutils literal"><span class="pre">en-IN</span></code>, <code class="docutils literal"><span class="pre">en-NG</span></code>, <code class="docutils literal"><span class="pre">en-NZ</span></code>, <code class="docutils literal"><span class="pre">en-ZA</span></code>, <code class="docutils literal"><span class="pre">en-ZM</span></code>
 <code class="docutils literal"><span class="pre">es-ES</span></code>, <code class="docutils literal"><span class="pre">fi-FI</span></code>, <code class="docutils literal"><span class="pre">fr-FR</span></code>, <code class="docutils literal"><span class="pre">he-IL</span></code>, <code class="docutils literal"><span class="pre">hu-HU</span></code>, <code class="docutils literal"><span class="pre">id-ID</span></code>, <code class="docutils literal"><span class="pre">it-IT</span></code>, <code class="docutils literal"><span class="pre">ja-JP</span></code>, <code class="docutils literal"><span class="pre">ms-MY</span></code>, <code class="docutils literal"><span class="pre">nb-NO</span></code>
 <code class="docutils literal"><span class="pre">nl-BE</span></code>, <code class="docutils literal"><span class="pre">fr-BE</span></code>, <code class="docutils literal"><span class="pre">nn-NO</span></code>, <code class="docutils literal"><span class="pre">pl-PL</span></code>, <code class="docutils literal"><span class="pre">pt-BR</span></code>, <code class="docutils literal"><span class="pre">pt-PT</span></code>, <code class="docutils literal"><span class="pre">ro-RO</span></code>, <code class="docutils literal"><span class="pre">en-PK</span></code>, <code class="docutils literal"><span class="pre">ru-RU</span></code>, <code class="docutils literal"><span class="pre">sr-RS</span></code>
-<code class="docutils literal"><span class="pre">tr-TR</span></code>, <code class="docutils literal"><span class="pre">vi-VN</span></code>, <code class="docutils literal"><span class="pre">zh-CN</span></code>, <code class="docutils literal"><span class="pre">zh-TW</span></code></p>
+<code class="docutils literal"><span class="pre">tr-TR</span></code>, <code class="docutils literal"><span class="pre">vi-VN</span></code>, <code class="docutils literal"><span class="pre">zh-CN</span></code>, <code class="docutils literal"><span class="pre">zh-TW</span></code>, <code class="docutils literal"><span class="pre">bn-BD</span></code></p>
 <p>Examples:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">isphone</span><span class="p">(</span><span class="s1">&#39;+15673628910&#39;</span><span class="p">,</span> <span class="s1">&#39;en-US&#39;</span><span class="p">)</span>
 <span class="go">True</span>
@@ -1112,8 +1144,8 @@ Supported locales are: <code class="docutils literal"><span class="pre">ar-DZ</s
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>value</strong> &#8211; string to validate mobile number</li>
-<li><strong>locale</strong> &#8211; locale of mobile number to validate</li>
+<li><strong>value</strong> – string to validate mobile number</li>
+<li><strong>locale</strong> – locale of mobile number to validate</li>
 </ul>
 </td>
 </tr>
@@ -1123,7 +1155,7 @@ Supported locales are: <code class="docutils literal"><span class="pre">ar-DZ</s
 
 </div>
 <div class="section" id="module-validus">
-<span id="isisbn"></span><h3>isisbn<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h3>
+<span id="isisbn"></span><h2>isisbn<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="validus.isisbn">
 <code class="descclassname">validus.</code><code class="descname">isisbn</code><span class="sig-paren">(</span><em>isbn</em>, <em>version=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/validus/isbn.html#isisbn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#validus.isisbn" title="Permalink to this definition">¶</a></dt>
@@ -1143,8 +1175,8 @@ If the value is a valid ISBN this function returns <code class="docutils literal
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>isbn</strong> &#8211; ISBN string to validate</li>
-<li><strong>version</strong> &#8211; Optional ISBN version (10 or 13)</li>
+<li><strong>isbn</strong> – ISBN string to validate</li>
+<li><strong>version</strong> – Optional ISBN version (10 or 13)</li>
 </ul>
 </td>
 </tr>
@@ -1154,7 +1186,7 @@ If the value is a valid ISBN this function returns <code class="docutils literal
 
 </div>
 <div class="section" id="module-validus">
-<span id="isisbn10"></span><h3>isisbn10<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h3>
+<span id="isisbn10"></span><h2>isisbn10<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="validus.isisbn10">
 <code class="descclassname">validus.</code><code class="descname">isisbn10</code><span class="sig-paren">(</span><em>isbn</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/validus/isbn.html#isisbn10"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#validus.isisbn10" title="Permalink to this definition">¶</a></dt>
@@ -1172,7 +1204,7 @@ If the value is a valid ISBN version 10 this function returns <code class="docut
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>isbn</strong> &#8211; ISBN version 10 string to validate</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>isbn</strong> – ISBN version 10 string to validate</td>
 </tr>
 </tbody>
 </table>
@@ -1180,7 +1212,7 @@ If the value is a valid ISBN version 10 this function returns <code class="docut
 
 </div>
 <div class="section" id="module-validus">
-<span id="isisbn13"></span><h3>isisbn13<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h3>
+<span id="isisbn13"></span><h2>isisbn13<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="validus.isisbn13">
 <code class="descclassname">validus.</code><code class="descname">isisbn13</code><span class="sig-paren">(</span><em>isbn</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/validus/isbn.html#isisbn13"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#validus.isisbn13" title="Permalink to this definition">¶</a></dt>
@@ -1198,13 +1230,199 @@ If the value is a valid ISBN version 13 this function returns <code class="docut
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>isbn</strong> &#8211; ISBN version 13 string to validate</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>isbn</strong> – ISBN version 13 string to validate</td>
 </tr>
 </tbody>
 </table>
 </dd></dl>
 
 </div>
+<div class="section" id="module-validus">
+<span id="ispositive"></span><h2>ispositive<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="validus.ispositive">
+<code class="descclassname">validus.</code><code class="descname">ispositive</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/validus/validators.html#ispositive"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#validus.ispositive" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return whether a number is positive or not</p>
+<p>Examples:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ispositive</span><span class="p">(</span><span class="s1">&#39;1&#39;</span><span class="p">)</span>
+<span class="go">True</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ispositive</span><span class="p">(</span><span class="s1">&#39;1.&#39;</span><span class="p">)</span>
+<span class="go">True</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ispositive</span><span class="p">(</span><span class="s1">&#39;-1.&#39;</span><span class="p">)</span>
+<span class="go">False</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ispositive</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">)</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> – string to validate number</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-validus">
+<span id="isimei"></span><h2>isimei<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="validus.isimei">
+<code class="descclassname">validus.</code><code class="descname">isimei</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/validus/validators.html#isimei"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#validus.isimei" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return whether or not given value is an imei.
+If the value is an imei, this function returns <code class="docutils literal"><span class="pre">True</span></code>, otherwise <code class="docutils literal"><span class="pre">False</span></code>.</p>
+<p>Examples:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">isimei</span><span class="p">(</span><span class="s1">&#39;565464561111118&#39;</span><span class="p">)</span>
+<span class="go">True</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">isimei</span><span class="p">(</span><span class="s1">&#39;123456789012341&#39;</span><span class="p">)</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> – string to validate imei</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-validus">
+<span id="issha1"></span><h2>issha1<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="validus.issha1">
+<code class="descclassname">validus.</code><code class="descname">issha1</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/validus/validators.html#issha1"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#validus.issha1" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return whether or not given value is SHA1 encoded.
+If the value is SHA1 encoded, this function returns <code class="docutils literal"><span class="pre">True</span></code>, otherwise <code class="docutils literal"><span class="pre">False</span></code>.</p>
+<p>Examples:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">issha1</span><span class="p">(</span><span class="s1">&#39;1bc6b8a58b484bdb6aa5264dc554934e3e46c405&#39;</span><span class="p">)</span>
+<span class="go">True</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">issha1</span><span class="p">(</span><span class="s1">&#39;ZKYT059dbf1c356032a7b1a1d4c2f719e5a14c1&#39;</span><span class="p">)</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> – string to validate SHA1 encoding</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-validus">
+<span id="issha256"></span><h2>issha256<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="validus.issha256">
+<code class="descclassname">validus.</code><code class="descname">issha256</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/validus/validators.html#issha256"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#validus.issha256" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return whether or not given value is SHA256 encoded.
+If the value is SHA256 encoded, this function returns <code class="docutils literal"><span class="pre">True</span></code>, otherwise <code class="docutils literal"><span class="pre">False</span></code>.</p>
+<p>Examples:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">issha256</span><span class="p">(</span><span class="s1">&#39;fd04c4a99b6b1f118452da33dfe9523ec164f5fecde4502b69f1ed3f24a29ff6&#39;</span><span class="p">)</span>
+<span class="go">True</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">issha256</span><span class="p">(</span><span class="s1">&#39;KLO4545ID55545789Hg545235F4525576adca7676cd7dca7976676e6789dcaee&#39;</span><span class="p">)</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> – string to validate SHA256 encoding</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-validus">
+<span id="issha512"></span><h2>issha512<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="validus.issha512">
+<code class="descclassname">validus.</code><code class="descname">issha512</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/validus/validators.html#issha512"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#validus.issha512" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return whether or not given value is SHA512 encoded.
+If the value is SHA512 encoded, this function returns <code class="docutils literal"><span class="pre">True</span></code>, otherwise <code class="docutils literal"><span class="pre">False</span></code>.</p>
+<p>Examples:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">issha512</span><span class="p">(</span><span class="s1">&#39;0b696861da778f6bd0d899ad9a581f4b9b1eb8286eaba266d2f2e2767539055bf8eb59e8884839a268141aba1ef078ce67cf94d421bd1195a3c0e817f5f7b286&#39;</span><span class="p">)</span>
+<span class="go">True</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">issha512</span><span class="p">(</span><span class="s1">&#39;KLO4545ID55545789Hg545235F45255452Hgf76DJF56HgKJfg3456356356346534534653456sghey45656jhgjfgghdfhgdfhdfhdfhdfhghhq94375dj93458w34&#39;</span><span class="p">)</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> – string to validate SHA512 encoding</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-validus">
+<span id="ismimetype"></span><h2>ismimetype<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="validus.ismimetype">
+<code class="descclassname">validus.</code><code class="descname">ismimetype</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/validus/validators.html#ismimetype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#validus.ismimetype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if the provided string matches to a correct Media type format (MIME type)
+If the value is a valid MIME Type, this function returns <code class="docutils literal"><span class="pre">True</span></code>, otherwise <code class="docutils literal"><span class="pre">False</span></code>.</p>
+<p>Examples:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ismimetype</span><span class="p">(</span><span class="s1">&#39;application/xhtml+xml&#39;</span><span class="p">)</span>
+<span class="go">True</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ismimetype</span><span class="p">(</span><span class="s1">&#39;application/json/text&#39;</span><span class="p">)</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> – string to validate MIME Type</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-validus">
+<span id="isisrc"></span><h2>isisrc<a class="headerlink" href="#module-validus" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="validus.isisrc">
+<code class="descclassname">validus.</code><code class="descname">isisrc</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/validus/validators.html#isisrc"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#validus.isisrc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if the provided string is valid ISRC(International Standard Recording Code)
+If the value is a valid ISRC, this function returns <code class="docutils literal"><span class="pre">True</span></code>, otherwise <code class="docutils literal"><span class="pre">False</span></code>.</p>
+<p>Examples:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">isisrc</span><span class="p">(</span><span class="s1">&#39;USAT29900609&#39;</span><span class="p">)</span>
+<span class="go">True</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">isisrc</span><span class="p">(</span><span class="s1">&#39;USAT2990060&#39;</span><span class="p">)</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>value</strong> – string to validate MIME Type</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </div>
 </div>
 
@@ -1225,10 +1443,65 @@ If the value is a valid ISBN version 13 this function returns <code class="docut
 
 <h3>Navigation</h3>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="readme.html">validus</a></li>
+<li class="toctree-l1"><a class="reference internal" href="readme.html">Validus</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Usage</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#basic-validation">Basic Validation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#basic-usage">Basic Usage</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="#available-functions">Available Functions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#module-validus">isascii</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-validus">isprintascii</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-validus">isnonempty</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-validus">isbase64</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-validus">isemail</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-validus">ishexadecimal</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-validus">ishexcolor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-validus">isrgbcolor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-validus">isint</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-validus">isfloat</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-validus">isslug</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-validus">isuuid</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-validus">isuuid3</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-validus">isuuid4</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-validus">isuuid5</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-validus">isfullwidth</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-validus">ishalfwidth</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-validus">islatitude</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-validus">islongitude</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-validus">ismac</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-validus">ismd5</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-validus">ismongoid</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-validus">isiso8601</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-validus">isipv4</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-validus">isipv6</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-validus">isip</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-validus">isport</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-validus">isdns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-validus">isssn</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-validus">issemver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-validus">isbytelen</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-validus">ismultibyte</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-validus">isfilepath</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-validus">isdatauri</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-validus">isjson</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-validus">istime</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-validus">isurl</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-validus">iscrcard</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-validus">isisin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-validus">isiban</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-validus">isphone</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-validus">isisbn</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-validus">isisbn10</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-validus">isisbn13</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-validus">ispositive</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-validus">isimei</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-validus">issha1</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-validus">issha256</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-validus">issha512</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-validus">ismimetype</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-validus">isisrc</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
@@ -1263,11 +1536,11 @@ If the value is a valid ISBN version 13 this function returns <code class="docut
       &copy;2017, Rafiqul Hasan.
       
       |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.4.8</a>
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.4</a>
       &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
       
       |
-      <a href="_sources/usage.txt"
+      <a href="_sources/usage.rst.txt"
           rel="nofollow">Page source</a>
     </div>
 

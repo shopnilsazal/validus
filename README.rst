@@ -10,7 +10,7 @@ Validus
         :target: https://travis-ci.org/shopnilsazal/validus
 
 
-A dead simple Python data validation library.
+A dead simple Python string validation library.
 
 
 Requirements
@@ -45,11 +45,13 @@ List of Functions
 
     isascii()
     isprintascii()
+    isnonempty()
     isbase64()
     isemail()
     ishexadecimal()
     isint()
     isfloat()
+    ispositive()
     isslug()
     isuuid()
     isuuid3()
@@ -90,6 +92,8 @@ List of Functions
     isisbn10()
     isisbn13()
     isimei()
+    ismimetype()
+    isisrc()
 
 
 

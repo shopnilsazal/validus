@@ -19,8 +19,8 @@ test_requirements = [
 
 setup(
     name='validus',
-    version='0.1.0',
-    description="A dead simple Python data validation library.",
+    version='0.2.0',
+    description="A dead simple Python string validation library.",
     long_description=readme + '\n\n' + history,
     author="Rafiqul Hasan",
     author_email='shopnilsazal@gmail.com',

@@ -10,7 +10,7 @@ validate and possibly some additional key-value arguments. Each function returns
 ``True`` when validation succeeds and ``False`` when validation fails.
 
 Basic Usage
------------
+===========
 
     >>> import validus
     >>> validus.isemail('me@mine.com')
@@ -18,9 +18,12 @@ Basic Usage
     >>> validus.isemail('@invalid.com')
     False
 
+===================
+Available Functions
+===================
 
 isascii
--------
+=======
 
 .. module:: validus
 
@@ -28,15 +31,23 @@ isascii
 
 
 isprintascii
-------------
+============
 
 .. module:: validus
 
 .. autofunction:: isprintascii
 
 
+isnonempty
+==========
+
+.. module:: validus
+
+.. autofunction:: isnonempty
+
+
 isbase64
---------
+========
 
 .. module:: validus
 
@@ -44,7 +55,7 @@ isbase64
 
 
 isemail
--------
+=======
 
 .. module:: validus
 
@@ -52,7 +63,7 @@ isemail
 
 
 ishexadecimal
--------------
+=============
 
 .. module:: validus
 
@@ -60,7 +71,7 @@ ishexadecimal
 
 
 ishexcolor
-----------
+==========
 
 .. module:: validus
 
@@ -68,7 +79,7 @@ ishexcolor
 
 
 isrgbcolor
-----------
+==========
 
 .. module:: validus
 
@@ -76,7 +87,7 @@ isrgbcolor
 
 
 isint
------
+=====
 
 .. module:: validus
 
@@ -84,7 +95,7 @@ isint
 
 
 isfloat
--------
+=======
 
 .. module:: validus
 
@@ -92,7 +103,7 @@ isfloat
 
 
 isslug
-------
+======
 
 .. module:: validus
 
@@ -100,7 +111,7 @@ isslug
 
 
 isuuid
-------
+======
 
 .. module:: validus
 
@@ -108,7 +119,7 @@ isuuid
 
 
 isuuid3
--------
+=======
 
 .. module:: validus
 
@@ -116,7 +127,7 @@ isuuid3
 
 
 isuuid4
--------
+=======
 
 .. module:: validus
 
@@ -124,7 +135,7 @@ isuuid4
 
 
 isuuid5
--------
+=======
 
 .. module:: validus
 
@@ -132,7 +143,7 @@ isuuid5
 
 
 isfullwidth
------------
+===========
 
 .. module:: validus
 
@@ -140,7 +151,7 @@ isfullwidth
 
 
 ishalfwidth
------------
+===========
 
 .. module:: validus
 
@@ -148,7 +159,7 @@ ishalfwidth
 
 
 islatitude
-----------
+==========
 
 .. module:: validus
 
@@ -156,7 +167,7 @@ islatitude
 
 
 islongitude
------------
+===========
 
 .. module:: validus
 
@@ -164,7 +175,7 @@ islongitude
 
 
 ismac
------
+=====
 
 .. module:: validus
 
@@ -172,7 +183,7 @@ ismac
 
 
 ismd5
------
+=====
 
 .. module:: validus
 
@@ -180,7 +191,7 @@ ismd5
 
 
 ismongoid
----------
+=========
 
 .. module:: validus
 
@@ -188,7 +199,7 @@ ismongoid
 
 
 isiso8601
----------
+=========
 
 .. module:: validus
 
@@ -196,7 +207,7 @@ isiso8601
 
 
 isipv4
-------
+======
 
 .. module:: validus
 
@@ -204,7 +215,7 @@ isipv4
 
 
 isipv6
-------
+======
 
 .. module:: validus
 
@@ -212,7 +223,7 @@ isipv6
 
 
 isip
-----
+====
 
 .. module:: validus
 
@@ -220,7 +231,7 @@ isip
 
 
 isport
-------
+======
 
 .. module:: validus
 
@@ -228,7 +239,7 @@ isport
 
 
 isdns
------
+=====
 
 .. module:: validus
 
@@ -236,7 +247,7 @@ isdns
 
 
 isssn
------
+=====
 
 .. module:: validus
 
@@ -244,7 +255,7 @@ isssn
 
 
 issemver
---------
+========
 
 .. module:: validus
 
@@ -252,7 +263,7 @@ issemver
 
 
 isbytelen
----------
+=========
 
 .. module:: validus
 
@@ -260,7 +271,7 @@ isbytelen
 
 
 ismultibyte
------------
+===========
 
 .. module:: validus
 
@@ -268,7 +279,7 @@ ismultibyte
 
 
 isfilepath
-----------
+==========
 
 .. module:: validus
 
@@ -276,7 +287,7 @@ isfilepath
 
 
 isdatauri
----------
+=========
 
 .. module:: validus
 
@@ -284,7 +295,7 @@ isdatauri
 
 
 isjson
-------
+======
 
 .. module:: validus
 
@@ -292,7 +303,7 @@ isjson
 
 
 istime
-------
+======
 
 .. module:: validus
 
@@ -300,7 +311,7 @@ istime
 
 
 isurl
------
+=====
 
 .. module:: validus
 
@@ -308,7 +319,7 @@ isurl
 
 
 iscrcard
---------
+========
 
 .. module:: validus
 
@@ -316,7 +327,7 @@ iscrcard
 
 
 isisin
-------
+======
 
 .. module:: validus
 
@@ -324,7 +335,7 @@ isisin
 
 
 isiban
-------
+======
 
 .. module:: validus
 
@@ -332,7 +343,7 @@ isiban
 
 
 isphone
--------
+=======
 
 .. module:: validus
 
@@ -340,7 +351,7 @@ isphone
 
 
 isisbn
-------
+======
 
 .. module:: validus
 
@@ -348,7 +359,7 @@ isisbn
 
 
 isisbn10
---------
+========
 
 .. module:: validus
 
@@ -356,9 +367,65 @@ isisbn10
 
 
 isisbn13
---------
+========
 
 .. module:: validus
 
 .. autofunction:: isisbn13
+
+
+ispositive
+==========
+
+.. module:: validus
+
+.. autofunction:: ispositive
+
+
+isimei
+======
+
+.. module:: validus
+
+.. autofunction:: isimei
+
+
+issha1
+======
+
+.. module:: validus
+
+.. autofunction:: issha1
+
+
+issha256
+========
+
+.. module:: validus
+
+.. autofunction:: issha256
+
+
+issha512
+========
+
+.. module:: validus
+
+.. autofunction:: issha512
+
+
+ismimetype
+==========
+
+.. module:: validus
+
+.. autofunction:: ismimetype
+
+
+isisrc
+======
+
+.. module:: validus
+
+.. autofunction:: isisrc
 

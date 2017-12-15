@@ -2,12 +2,6 @@ from .utils import validate_str
 import re
 
 
-isbn_patterns = {
-    'isbn10': r"^(?:[0-9]{9}X|[0-9]{10})$",
-    'isbn13': r"^(?:[0-9]{13})$",
-}
-
-
 @validate_str
 def sanitize_isbn(isbn):
     sanitized = re.sub(r'[\s-]+', '', isbn)
@@ -48,10 +42,12 @@ def isisbn(isbn, version=None):
     :param isbn: ISBN string to validate
     :param version: Optional ISBN version (10 or 13)
     """
+    isbn10_pattern = re.compile(r"^(?:[0-9]{9}X|[0-9]{10})$")
+    isbn13_pattern = re.compile(r"^(?:[0-9]{13})$")
     sanitized = sanitize_isbn(isbn)
 
     if version == 10:
-        if not re.match(isbn_patterns['isbn10'], sanitized):
+        if not isbn10_pattern.match(sanitized):
             return False
         checksum = get_isbn_10_checksum(isbn)
         if checksum % 11 == 0:
@@ -59,7 +55,7 @@ def isisbn(isbn, version=None):
         return False
 
     elif version == 13:
-        if not re.match(isbn_patterns['isbn13'], sanitized):
+        if not isbn13_pattern.match(sanitized):
             return False
         checksum = get_isbn_13_checksum(isbn)
         if int(sanitized[12]) - ((10 - (checksum % 10)) % 10) == 0:
