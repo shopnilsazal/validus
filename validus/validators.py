@@ -62,7 +62,7 @@ def isnonempty(value):
 
     :param value: string to validate whether value is not empty
     """
-    return True if len(value) > 0 else False
+    return value != ''
 
 
 @validate_str
@@ -121,8 +121,10 @@ def ishexadecimal(value):
 
     :param value: string to validate hexadecimal number
     """
-    hexa_decimal = re.compile(r"^[0-9a-fA-F]+$")
-    return bool(hexa_decimal.match(value))
+    try:
+        return int(value, 16) >= 0
+    except ValueError:
+        return False
 
 
 @validate_str
@@ -141,8 +143,11 @@ def ishexcolor(value):
 
     :param value: string to validate hexadecimal color
     """
-    pattern = re.compile(r"^#?([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$")
-    return bool(pattern.match(value))
+    value = value.lstrip('#')
+    try:
+        return int(value, 16) >= 0 and len(value) in (3, 6)
+    except ValueError:
+        return False
 
 
 @validate_str
@@ -455,8 +460,7 @@ def ismd5(value):
 
     :param value: string to validate MD5 encoding
     """
-    md5 = re.compile(r'^[a-fA-F0-9]{32}$')
-    return bool(md5.match(value))
+    return ishexadecimal(value) and len(value) == 32
 
 
 @validate_str
@@ -475,8 +479,7 @@ def issha1(value):
 
     :param value: string to validate SHA1 encoding
     """
-    sha1 = re.compile(r'^[a-fA-F0-9]{40}$')
-    return bool(sha1.match(value))
+    return ishexadecimal(value) and len(value) == 40
 
 
 @validate_str
@@ -495,8 +498,7 @@ def issha256(value):
 
     :param value: string to validate SHA256 encoding
     """
-    sha256 = re.compile(r'^[a-fA-F0-9]{64}$')
-    return bool(sha256.match(value))
+    return ishexadecimal(value) and len(value) == 64
 
 
 @validate_str
@@ -515,8 +517,7 @@ def issha512(value):
 
     :param value: string to validate SHA512 encoding
     """
-    sha512 = re.compile(r'^[a-fA-F0-9]{128}$')
-    return bool(sha512.match(value))
+    return ishexadecimal(value) and len(value) == 128
 
 
 @validate_str
@@ -640,12 +641,8 @@ def isport(value):
     :param value: string to validate port
     """
     try:
-        port = int(value)
+        return 0 < int(value) < 65536
     except ValueError:
-        return False
-    if 0 < port < 65536:
-        return True
-    else:
         return False
 
 
