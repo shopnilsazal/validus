@@ -19,7 +19,7 @@ test_requirements = [
 
 setup(
     name='validus',
-    version='0.2.0',
+    version='0.3.0',
     description="A dead simple Python string validation library.",
     long_description=readme + '\n\n' + history,
     author="Rafiqul Hasan",

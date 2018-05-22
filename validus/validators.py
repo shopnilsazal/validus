@@ -866,7 +866,22 @@ def isurl(value):
 
     :param value: string to validate URL
     """
-    url = re.compile(r'^((ftp|tcp|irc|udp|wss?|https?)://)?(\S+(:\S*)?@)?((([1-9]\d?|1\d\d|2[01]\d|22[0-3])(\.(1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.([0-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(\[(([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,7}:|([0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}|([0-9a-fA-F]{1,4}:){1,5}(:[0-9a-fA-F]{1,4}){1,2}|([0-9a-fA-F]{1,4}:){1,4}(:[0-9a-fA-F]{1,4}){1,3}|([0-9a-fA-F]{1,4}:){1,3}(:[0-9a-fA-F]{1,4}){1,4}|([0-9a-fA-F]{1,4}:){1,2}(:[0-9a-fA-F]{1,4}){1,5}|[0-9a-fA-F]{1,4}:((:[0-9a-fA-F]{1,4}){1,6})|:((:[0-9a-fA-F]{1,4}){1,7}|:)|fe80:(:[0-9a-fA-F]{0,4}){0,4}%[0-9a-zA-Z]+|::(ffff(:0{1,4})?:)?((25[0-5]|(2[0-4]|1?[0-9])?[0-9])\.){3}(25[0-5]|(2[0-4]|1?[0-9])?[0-9])|([0-9a-fA-F]{1,4}:){1,4}:((25[0-5]|(2[0-4]|1?[0-9])?[0-9])\.){3}(25[0-5]|(2[0-4]|1?[0-9])?[0-9]))\])|(([a-zA-Z0-9]([a-zA-Z0-9-_]+)?[a-zA-Z0-9]([-.][a-zA-Z0-9]+)*)|(((www\.)|([a-zA-Z0-9]([-.][-._a-zA-Z0-9]+)*))?))?(([a-zA-Z\u00a1-\uffff0-9]+-?-?)*[a-zA-Z\u00a1-\uffff0-9]+)(?:\.([a-zA-Z\u00a1-\uffff]+))?))\.?(:(\d{1,5}))?((/|\?|#)[^\s]*)?$')
+    # Regex patterns for validating URL is taken from
+    # Django's URLValidator class
+
+    ul = '\u00a1-\uffff'
+
+    # IP patterns
+    ipv4_re = r'(?:25[0-5]|2[0-4]\d|[0-1]?\d?\d)(?:\.(?:25[0-5]|2[0-4]\d|[0-1]?\d?\d)){3}'
+    ipv6_re = r'\[[0-9a-f:\.]+\]'
+
+    # Host patterns
+    hostname_re = r'[a-z' + ul + r'0-9](?:[a-z' + ul + r'0-9-]{0,61}[a-z' + ul + r'0-9])?'
+    domain_re = r'(?:\.(?!-)[a-z' + ul + r'0-9-]{1,63}(?<!-))*'
+    tld_re = r'\.(?!-)(?:[a-z' + ul + '-]{2,63}|xn--[a-z0-9]{1,59})(?<!-)\.?'  # may have a trailing dot
+    host_re = '(' + hostname_re + domain_re + tld_re + '|localhost)'
+    url = re.compile(r'^(ftp|tcp|rtmp|udp|wss?|https?)://(?:\S+(?::\S*)?@)?(?:' + ipv4_re + '|' + ipv6_re + '|' + host_re + ')(?::\d{2,5})?(?:[/?#][^\s]*)?\Z', re.IGNORECASE)
+
     if value == '' or len(value) >= 2083 or len(value) <= 3:
         return False
     return bool(url.match(value))

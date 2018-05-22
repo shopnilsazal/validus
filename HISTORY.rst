@@ -2,6 +2,11 @@
 History
 =======
 
+0.3.0 (2018-05-22)
+------------------
+
+* isurl function updated and removed support for irc url.
+
 0.2.0 (2017-12-15)
 ------------------
 
