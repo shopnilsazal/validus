@@ -7,5 +7,10 @@ env:
 - TOXENV=py27
 install: pip install -U tox
 language: python
-python: 3.5
+python:
+  - 2.7
+  - 3.4
+  - 3.5
+  - 3.6
+  - 3.7
 script: tox -e ${TOXENV}
