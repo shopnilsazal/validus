@@ -880,7 +880,7 @@ def isurl(value):
     domain_re = r'(?:\.(?!-)[a-z' + ul + r'0-9-]{1,63}(?<!-))*'
     tld_re = r'\.(?!-)(?:[a-z' + ul + r'-]{2,63}|xn--[a-z0-9]{1,59})(?<!-)\.?'  # may have a trailing dot
     host_re = '(' + hostname_re + domain_re + tld_re + '|localhost)'
-    url = re.compile(r'^(ftp|tcp|rtmp|udp|wss?|https?)://(?:\S+(?::\S*)?@)?(?:' + ipv4_re + '|' + ipv6_re + '|' + host_re + ')(?::\d{2,5})?(?:[/?#][^\s]*)?\Z', re.IGNORECASE)
+    url = re.compile(r'^(ftp|tcp|rtmp|udp|wss?|https?)://(?:\S+(?::\S*)?@)?(?:' + ipv4_re + '|' + ipv6_re + '|' + host_re + r')(?::\d{2,5})?(?:[/?#][^\s]*)?\Z', re.IGNORECASE)
 
     if value == '' or len(value) >= 2083 or len(value) <= 3:
         return False
